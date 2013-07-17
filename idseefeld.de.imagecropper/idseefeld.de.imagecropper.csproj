@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{675C9A37-D36B-4781-A9D6-449E8F043055}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>idseefeld.de.imagecropper</RootNamespace>
+    <AssemblyName>idseefeld.de.imagecropper</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="businesslogic">
+      <HintPath>..\externals\businesslogic.dll</HintPath>
+    </Reference>
+    <Reference Include="ClientDependency.Core">
+      <HintPath>..\externals\ClientDependency.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="cms">
+      <HintPath>..\externals\cms.dll</HintPath>
+    </Reference>
+    <Reference Include="controls">
+      <HintPath>..\externals\controls.dll</HintPath>
+    </Reference>
+    <Reference Include="interfaces">
+      <HintPath>..\externals\interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="umbraco">
+      <HintPath>..\externals\umbraco.dll</HintPath>
+    </Reference>
+    <Reference Include="Umbraco.Core">
+      <HintPath>..\externals\Umbraco.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="umbraco.DataLayer">
+      <HintPath>..\externals\umbraco.DataLayer.dll</HintPath>
+    </Reference>
+    <Reference Include="umbraco.editorControls">
+      <HintPath>..\externals\umbraco.editorControls.dll</HintPath>
+    </Reference>
+    <Reference Include="umbraco.MacroEngines">
+      <HintPath>..\externals\umbraco.MacroEngines.dll</HintPath>
+    </Reference>
+    <Reference Include="umbraco.macroRenderings">
+      <HintPath>..\externals\umbraco.macroRenderings.dll</HintPath>
+    </Reference>
+    <Reference Include="umbraco.providers">
+      <HintPath>..\externals\umbraco.providers.dll</HintPath>
+    </Reference>
+    <Reference Include="Umbraco.Web.UI">
+      <HintPath>..\externals\Umbraco.Web.UI.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="imagecropper\Config.cs" />
+    <Compile Include="imagecropper\Data.cs" />
+    <Compile Include="imagecropper\DataEditor.cs" />
+    <Compile Include="imagecropper\DataType.cs" />
+    <Compile Include="imagecropper\DataTypeData.cs" />
+    <Compile Include="imagecropper\Helper.cs" />
+    <Compile Include="imagecropper\ImageEventsForCropper.cs" />
+    <Compile Include="imagecropper\ImageInfo.cs" />
+    <Compile Include="imagecropper\ImageResizeEngineDefault.cs" />
+    <Compile Include="imagecropper\ImageTools.cs" />
+    <Compile Include="imagecropper\PersitenceFactory.cs" />
+    <Compile Include="imagecropper\PrevalueEditor.cs" />
+    <Compile Include="imagecropper\SaveData.cs" />
+    <Compile Include="imagecropper\SmartListBox.cs" />
+    <Compile Include="imagecropper\UmbracoImage.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyHelper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="imagecropper\Resources\imageCropperScript.js" />
+    <EmbeddedResource Include="imagecropper\Resources\Jcrop.gif" />
+    <EmbeddedResource Include="imagecropper\Resources\jCropCSS.css" />
+    <EmbeddedResource Include="imagecropper\Resources\jCropScript.js" />
+    <EmbeddedResource Include="imagecropper\Resources\json2.js" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

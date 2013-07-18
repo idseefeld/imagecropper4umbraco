@@ -109,6 +109,9 @@
     <EmbeddedResource Include="imagecropper\Resources\jCropScript.js" />
     <EmbeddedResource Include="imagecropper\Resources\json2.js" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="imagecropper\Resources\product-logo.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

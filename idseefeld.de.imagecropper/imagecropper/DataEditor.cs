@@ -18,6 +18,7 @@ using umbraco.editorControls;
 [assembly: WebResource("idseefeld.de.imagecropper.imagecropper.Resources.json2.js", "text/javascript")]
 [assembly: WebResource("idseefeld.de.imagecropper.imagecropper.Resources.jCropScript.js", "text/javascript")]
 [assembly: WebResource("idseefeld.de.imagecropper.imagecropper.Resources.jCropCSS.css", "text/css")]
+[assembly: WebResource("idseefeld.de.imagecropper.imagecropper.Resources.Jcrop.gif", "image/gif")]
 namespace idseefeld.de.imagecropper.imagecropper
 {
 	public class DataEditor : PlaceHolder, umbraco.interfaces.IDataEditor
@@ -271,7 +272,7 @@ namespace idseefeld.de.imagecropper.imagecropper
     .jcrop-vline, .jcrop-hline {{ background-image: url('{1}'); }}
 </style>",
 				Page.ClientScript.GetWebResourceUrl(typeof(DataEditor), "idseefeld.de.imagecropper.imagecropper.Resources.jCropCSS.css"),
-				Page.ClientScript.GetWebResourceUrl(typeof(DataEditor), "idseefeld.de.Images.Resources.Jcrop.gif")
+				Page.ClientScript.GetWebResourceUrl(typeof(DataEditor), "idseefeld.de.imagecropper.imagecropper.Resources.Jcrop.gif")
 				)));
 
 

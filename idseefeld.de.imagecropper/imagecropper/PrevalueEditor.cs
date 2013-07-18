@@ -9,10 +9,9 @@ using System.Text;
 using umbraco.macroRenderings;
 using umbraco.editorControls;
 
-namespace idseefeld.de.imagecropper.imagecropper
-{
-	public class PrevalueEditor : PlaceHolder, IDataPrevalue
-	{
+[assembly: WebResource("idseefeld.de.imagecropper.imagecropper.Resources.product-logo.png", "image/png")]
+namespace idseefeld.de.imagecropper.imagecropper {
+	public class PrevalueEditor : PlaceHolder, IDataPrevalue {
 		private readonly umbraco.cms.businesslogic.datatype.BaseDataType _dataType;
 
 		private Config config;
@@ -182,8 +181,8 @@ namespace idseefeld.de.imagecropper.imagecropper
 						String.Concat(ddlDefaultPosH.SelectedValue, ddlDefaultPosV.SelectedValue)),
 					String.Format("{0},{1},{2},{3},{4}",
 								  txtCropName.Text,
-								  txtTargetWidth.Text,
-								  txtTargetHeight.Text,
+								  String.IsNullOrEmpty(txtTargetWidth.Text) ? "0": txtTargetWidth.Text,
+								  String.IsNullOrEmpty(txtTargetHeight.Text) ? "0": txtTargetHeight.Text,
 								  chkKeepAspect.Checked ? "1" : "0",
 								  String.Concat(ddlDefaultPosH.SelectedValue, ddlDefaultPosV.SelectedValue))
 					)
@@ -219,7 +218,7 @@ namespace idseefeld.de.imagecropper.imagecropper
 			{
 				config = new Config(Configuration);
 			}
-			
+
 		}
 
 		private void LoadData()
@@ -231,7 +230,8 @@ namespace idseefeld.de.imagecropper.imagecropper
 					config = new Config(Configuration);
 				}
 				//txtPropertyAlias.Text = config.UploadPropertyAlias;
-				if (this.imagePropertyTypePicker.Items.Contains(new ListItem(config.UploadPropertyAlias))) {
+				if (this.imagePropertyTypePicker.Items.Contains(new ListItem(config.UploadPropertyAlias)))
+				{
 					this.imagePropertyTypePicker.SelectedValue = config.UploadPropertyAlias;
 				}
 
@@ -272,12 +272,24 @@ namespace idseefeld.de.imagecropper.imagecropper
 
 		private static string getListItemDisplayName(string presetTemplateName, string width, string height, string keepAspect, string position)
 		{
-			return String.Format("{0}, width: {1}px, height: {2}px, keep aspect: {3}, {4}",
+			string rVal = String.Empty;
+			if (String.IsNullOrEmpty(width) || String.IsNullOrEmpty(height) || width.Equals("0") || height.Equals("0"))
+			{
+				rVal = String.Format("{0}, width: {1}px, height: {2}px",
 								 presetTemplateName,
-								 width,
-								 height,
-								 keepAspect == "1" ? "yes" : "no",
-								 position);
+								 String.IsNullOrEmpty(width) ? "0" : width,
+								 String.IsNullOrEmpty(height) ? "0" : height);
+			}
+			else
+			{
+				rVal = String.Format("{0}, width: {1}px, height: {2}px, keep aspect: {3}, {4}",
+												 presetTemplateName,
+												 width,
+												 height,
+												 keepAspect == "1" ? "yes" : "no",
+												 position);
+			}
+			return rVal;
 		}
 
 		/// <summary>
@@ -289,7 +301,7 @@ namespace idseefeld.de.imagecropper.imagecropper
 			_dataType.DBType = (umbraco.cms.businesslogic.datatype.DBTypes)Enum.Parse(
 																			   typeof(umbraco.cms.businesslogic.datatype.DBTypes), DBTypes.Ntext.ToString(), true);
 			string generalData = String.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}",
-											   //txtPropertyAlias.Text,
+				//txtPropertyAlias.Text,
 											   this.imagePropertyTypePicker.SelectedValue,
 											   chkGenerateCrops.Checked ? "1" : "0",
 											   chkShowLabel.Checked ? "1" : "0",
@@ -310,7 +322,7 @@ namespace idseefeld.de.imagecropper.imagecropper
 				if (i < slbPresets.Items.Count - 1) templateData += ";";
 			}
 
-			string data= String.Format("{0}|{1}", generalData, templateData);
+			string data = String.Format("{0}|{1}", generalData, templateData);
 
 			SqlHelper.ExecuteNonQuery("delete from cmsDataTypePreValues where datatypenodeid = @dtdefid",
 									  SqlHelper.CreateParameter("@dtdefid", _dataType.DataTypeDefinitionId));
@@ -325,27 +337,20 @@ namespace idseefeld.de.imagecropper.imagecropper
 			writer.Write("td.hintText{font-size:90%;color:#999;padding-bottom:10px;}");
 			writer.Write("</style>");
 
-			writer.Write("<div style=\"float:left;overflow:hidden;\"><p><strong>General</strong></p></div>");
-
+			//writer.Write("<div style=\"float:left;overflow:hidden;\"><p><strong>General</strong></p></div>");
+			writer.Write(String.Format("<div style=\"float:left;overflow:hidden;width:100%;\"><a href='https://github.com/idseefeld/imagecropper4umbraco' target='_blank'><img src='{0}' align='right' /></a></div>",
+			Page.ClientScript.GetWebResourceUrl(typeof(PrevalueEditor), "idseefeld.de.imagecropper.imagecropper.Resources.product-logo.png")
+				));
 			writer.Write("<table style=\"clear:both\">");
 
 
-			//writer.Write("  <tr><td>Property alias: (e.g. 'umbracoFile'):</td><td>");
 			writer.Write("<tr><td>Property alias:</td><td>");
-			//txtPropertyAlias.RenderControl(writer);
+
 			this.imagePropertyTypePicker.RenderControl(writer);
-			this.imagePropertyRequiredFieldValidator.RenderControl(writer); 
+			this.imagePropertyRequiredFieldValidator.RenderControl(writer);
 			writer.Write("</td></tr>");
-			writer.Write("<tr><td colspan=\"2\" class='hintText'>If you use the Image Cropper as a document type property, you can only connect to one upload property.<br />But you can define another Data Type for a second upload etc.</td></tr>");
+			writer.Write("<tr><td colspan=\"2\" class='hintText'>As document type property any image cropper data type can only connect to one upload property.<br />But you can define another data type for a second upload.</td></tr>");
 
-			//writer.Write("  <tr><td>Cropper backgroung: (e.g. '#000', 'black' or 'transparent'):</td><td>");
-			//txtBackgroungColor.RenderControl(writer);
-			//writer.Write("  </td></tr>");
-
-			//writer.Write("  <tr><td>Resize width for Cropper (/media/(imageid)/(filename)_cb.*):</td><td>");
-			//txtResizeMax.RenderControl(writer);
-			//writer.Write("  </td></tr>");
-			//writer.Write("  <tr><td class='hintText'>Existing crops will not be changed before new upload<br />or the update button has been pressed.</td><td></td></tr>");
 
 			writer.Write("  <tr><td>Save crop images as files:</td><td>");
 			chkGenerateCrops.RenderControl(writer);
@@ -353,11 +358,6 @@ namespace idseefeld.de.imagecropper.imagecropper
 			txtQuality.RenderControl(writer);
 			writer.Write("  </td></tr>");
 			writer.Write("  <tr><td class='hintText'>(/media/(imageid)/(filename)_(cropname).*)</td><td></td></tr>");
-
-			//writer.Write("  <tr><td>Automatically generate crops</td><td>");
-			//chkAutoGenerateCrops.RenderControl(writer);
-			//writer.Write("  </td></tr>");
-			//writer.Write("  <tr><td colspan=\"2\" class='hintText'>If you want default crops to be generated after upload check this option.<br />This is especially usefull for media images.</td></tr>");// or make the property mandatory
 
 			writer.Write("  <tr><td>Ignore ICC </td><td>");
 			chkIgnoreICC.RenderControl(writer);
@@ -377,6 +377,7 @@ namespace idseefeld.de.imagecropper.imagecropper
 			writer.Write("<p><strong>Crops</strong></p>");
 
 			writer.Write("<table>");
+			writer.Write("  <tr><td colspan='3' class='hintText'>To constrain only one dimension set the other one to 0.<br />e.g. <em>Target width = 200 px, Target height: 0 px</em>. In this case <em>Default postion</em> and <em>Keep aspect</em> are ignored.</td></tr>");
 			writer.Write("  <tr><td valign=\"top\">");
 
 			writer.Write("      <table>");

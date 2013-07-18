@@ -28,3 +28,33 @@ C:\inetpub\wwwroot\umb6.1.x\idseefeld.de.imagecropper\idseefeld.de.imagecropper\
 C:\inetpub\wwwroot\umb6.1.x\idseefeld.de.imagecropper\idseefeld.de.imagecropper\obj\Debug\idseefeld.de.imagecropper.csprojResolveAssemblyReference.cache
 C:\inetpub\wwwroot\umb6.1.x\idseefeld.de.imagecropper\idseefeld.de.imagecropper\obj\Debug\idseefeld.de.imagecropper.dll
 C:\inetpub\wwwroot\umb6.1.x\idseefeld.de.imagecropper\idseefeld.de.imagecropper\obj\Debug\idseefeld.de.imagecropper.pdb
+C:\Users\Dirk Seefeld\Documents\GitHub\imagecropper4umbraco\idseefeld.de.imagecropper\bin\Debug\idseefeld.de.imagecropper.dll
+C:\Users\Dirk Seefeld\Documents\GitHub\imagecropper4umbraco\idseefeld.de.imagecropper\bin\Debug\idseefeld.de.imagecropper.pdb
+C:\Users\Dirk Seefeld\Documents\GitHub\imagecropper4umbraco\idseefeld.de.imagecropper\bin\Debug\businesslogic.dll
+C:\Users\Dirk Seefeld\Documents\GitHub\imagecropper4umbraco\idseefeld.de.imagecropper\bin\Debug\ClientDependency.Core.dll
+C:\Users\Dirk Seefeld\Documents\GitHub\imagecropper4umbraco\idseefeld.de.imagecropper\bin\Debug\cms.dll
+C:\Users\Dirk Seefeld\Documents\GitHub\imagecropper4umbraco\idseefeld.de.imagecropper\bin\Debug\controls.dll
+C:\Users\Dirk Seefeld\Documents\GitHub\imagecropper4umbraco\idseefeld.de.imagecropper\bin\Debug\interfaces.dll
+C:\Users\Dirk Seefeld\Documents\GitHub\imagecropper4umbraco\idseefeld.de.imagecropper\bin\Debug\Umbraco.Core.dll
+C:\Users\Dirk Seefeld\Documents\GitHub\imagecropper4umbraco\idseefeld.de.imagecropper\bin\Debug\umbraco.DataLayer.dll
+C:\Users\Dirk Seefeld\Documents\GitHub\imagecropper4umbraco\idseefeld.de.imagecropper\bin\Debug\umbraco.dll
+C:\Users\Dirk Seefeld\Documents\GitHub\imagecropper4umbraco\idseefeld.de.imagecropper\bin\Debug\umbraco.editorControls.dll
+C:\Users\Dirk Seefeld\Documents\GitHub\imagecropper4umbraco\idseefeld.de.imagecropper\bin\Debug\umbraco.MacroEngines.dll
+C:\Users\Dirk Seefeld\Documents\GitHub\imagecropper4umbraco\idseefeld.de.imagecropper\bin\Debug\umbraco.macroRenderings.dll
+C:\Users\Dirk Seefeld\Documents\GitHub\imagecropper4umbraco\idseefeld.de.imagecropper\bin\Debug\umbraco.providers.dll
+C:\Users\Dirk Seefeld\Documents\GitHub\imagecropper4umbraco\idseefeld.de.imagecropper\bin\Debug\Umbraco.Web.UI.dll
+C:\Users\Dirk Seefeld\Documents\GitHub\imagecropper4umbraco\idseefeld.de.imagecropper\bin\Debug\System.Web.Http.dll
+C:\Users\Dirk Seefeld\Documents\GitHub\imagecropper4umbraco\idseefeld.de.imagecropper\bin\Debug\System.Net.Http.dll
+C:\Users\Dirk Seefeld\Documents\GitHub\imagecropper4umbraco\idseefeld.de.imagecropper\bin\Debug\System.Web.Http.WebHost.dll
+C:\Users\Dirk Seefeld\Documents\GitHub\imagecropper4umbraco\idseefeld.de.imagecropper\bin\Debug\System.Net.Http.Formatting.dll
+C:\Users\Dirk Seefeld\Documents\GitHub\imagecropper4umbraco\idseefeld.de.imagecropper\bin\Debug\System.Web.Http.xml
+C:\Users\Dirk Seefeld\Documents\GitHub\imagecropper4umbraco\idseefeld.de.imagecropper\bin\Debug\System.Net.Http.xml
+C:\Users\Dirk Seefeld\Documents\GitHub\imagecropper4umbraco\idseefeld.de.imagecropper\bin\Debug\System.Web.Http.WebHost.xml
+C:\Users\Dirk Seefeld\Documents\GitHub\imagecropper4umbraco\idseefeld.de.imagecropper\bin\Debug\System.Net.Http.Formatting.xml
+C:\Users\Dirk Seefeld\Documents\GitHub\imagecropper4umbraco\idseefeld.de.imagecropper\bin\Debug\de\System.Web.Http.resources.dll
+C:\Users\Dirk Seefeld\Documents\GitHub\imagecropper4umbraco\idseefeld.de.imagecropper\bin\Debug\de\System.Net.Http.resources.dll
+C:\Users\Dirk Seefeld\Documents\GitHub\imagecropper4umbraco\idseefeld.de.imagecropper\bin\Debug\de\System.Web.Http.WebHost.resources.dll
+C:\Users\Dirk Seefeld\Documents\GitHub\imagecropper4umbraco\idseefeld.de.imagecropper\bin\Debug\de\System.Net.Http.Formatting.resources.dll
+C:\Users\Dirk Seefeld\Documents\GitHub\imagecropper4umbraco\idseefeld.de.imagecropper\obj\Debug\idseefeld.de.imagecropper.csprojResolveAssemblyReference.cache
+C:\Users\Dirk Seefeld\Documents\GitHub\imagecropper4umbraco\idseefeld.de.imagecropper\obj\Debug\idseefeld.de.imagecropper.dll
+C:\Users\Dirk Seefeld\Documents\GitHub\imagecropper4umbraco\idseefeld.de.imagecropper\obj\Debug\idseefeld.de.imagecropper.pdb

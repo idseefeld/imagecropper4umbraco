@@ -32,13 +32,12 @@ namespace idseefeld.de.imagecropper.imagecropper
         }
         public override Guid Id
         {
-            //get { return new Guid("7A2D436C-34C2-410F-898F-4A23B3D79F54"); }
-			get { return new Guid("5E8E0761-22B0-42DB-8A99-DC7DD4CE797B"); }
+            get { return new Guid("5E8E0761-22B0-42DB-8A99-DC7DD4CE797B"); }
         }
 
         public override string DataTypeName
         {
-            get { return "Image Cropper Extra"; }
+            get { return "Image Cropper Extended"; }
         }        
 
         public override umbraco.interfaces.IDataPrevalue PrevalueEditor

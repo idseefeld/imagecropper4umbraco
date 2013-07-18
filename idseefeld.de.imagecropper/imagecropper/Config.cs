@@ -33,12 +33,11 @@ namespace idseefeld.de.imagecropper.imagecropper
 			newCropFiles = new List<string>();
 			cropHashDict = new Dictionary<string, string>();
 
+			ResizeEngine = new ImageResizeEngineDefault();
+
 			string[] configData = configuration.Split('|');
-
 			if (configData.Length < 2) return;
-
 			string[] generalSettings = configData[0].Split(',');
-
 			UploadPropertyAlias = generalSettings[0];
 			GenerateImages = generalSettings[1] == "1";
 			ShowLabel = generalSettings[2] == "1";
@@ -78,8 +77,6 @@ namespace idseefeld.de.imagecropper.imagecropper
 				ShowIgnoreICC = generalSettings[9] == "1";
 			else
 				ShowIgnoreICC = false;//legacy behaviour
-
-			ResizeEngine = new ImageResizeEngineDefault();
 
 			string[] presetData = configData[1].Split(';');
 

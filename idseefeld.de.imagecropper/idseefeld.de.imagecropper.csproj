@@ -85,7 +85,9 @@
     <Compile Include="imagecropper\Config.cs" />
     <Compile Include="imagecropper\Data.cs" />
     <Compile Include="imagecropper\DataEditor.cs" />
-    <Compile Include="imagecropper\DataType.cs" />
+    <Compile Include="imagecropper\DataType.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="imagecropper\DataTypeData.cs" />
     <Compile Include="imagecropper\Helper.cs" />
     <Compile Include="imagecropper\ImageEventsForCropper.cs" />

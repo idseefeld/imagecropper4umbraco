@@ -10,8 +10,7 @@ namespace idseefeld.de.imagecropper
 	{
 		/// <summary>
 		/// Recursively finds a control with the specified identifier. 
-		/// extracted from idseefeld.de.imagecropper.uploadfield
-		/// also use in idseefeld.de.imagecropper.imagecropper
+		/// extracted from umbraco.editorControls.uploadfield
 		/// </summary>
 		/// <typeparam name="T">
 		/// The type of control to be found.

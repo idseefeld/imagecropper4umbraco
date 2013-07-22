@@ -11,10 +11,8 @@ using System.Web.UI.WebControls;
 using System.Xml;
 using Umbraco.Core.Media;
 
-namespace idseefeld.de.imagecropper.imagecropper
-{
-	public class ImageEngineImageResizer : IImageResizeEngine
-	{
+namespace idseefeld.de.imagecropper.imagecropper {
+	public class ImageEngineImageResizer : PersitenceFactory, IImageResizeEngine {
 		Control _featureControls;
 
 		string[] _prevalues;
@@ -296,38 +294,16 @@ namespace idseefeld.de.imagecropper.imagecropper
 									resizeSettings.Flip = irFeatures.Flip;
 								if (irFeatures.Rotation != 0)
 									resizeSettings.Rotate = irFeatures.Rotation;
-								//only available with installed and licensed ImageResizer.Plugins.AdvancedFilters package
-								if (irFeatures.AdvancedFiltersInstalled)
-								{
-									if (irFeatures.SharpenRadius > 0)
-										resizeSettings.Add("a.sharpen", irFeatures.SharpenRadius.ToString());
-									if (irFeatures.BlurRadius > 0)
-										resizeSettings.Add("a.blur", irFeatures.BlurRadius.ToString());
-
-									//resizeSettings.Add("a.sepia", "true");
-								}
 							}
-							////ImageJob job = new ImageJob(imgPath, newPath, resizeSettings);
-							////ImageBuilder.Current.Build(job);
-							ImageBuilder.Current.Build(imgPath, newPath, resizeSettings);
-
-							//if (irFeatures.AdvancedFiltersInstalled)
-							//{
-							//    ResizeSettings advancedSettings = new ResizeSettings();
-							//    if (irFeatures.SharpenRadius > 0)
-							//        advancedSettings.Add("sharpen", irFeatures.SharpenRadius.ToString());
-							//    if (irFeatures.BlurRadius > 0)
-							//        advancedSettings.Add("blur", irFeatures.BlurRadius.ToString());
-
-							//    advancedSettings.Add("a.sepia", "true");
-							//    ImageBuilder.Current.Build(newPath, advancedSettings);
-							//}
+							Stream sourceStream = _fileSystem.OpenFile(imgPath);
+							Stream destinationStream = new MemoryStream();
+							ImageJob irJob = new ImageJob(sourceStream, destinationStream, resizeSettings);
+							ImageBuilder.Current.Build(irJob);
+							_fileSystem.AddFile(newPath, destinationStream, true);
 						}
 						else
 						{
-							if (File.Exists(newPath))
-								File.Delete(newPath);
-							File.Copy(imgPath, newPath);
+							_fileSystem.AddFile(newPath, _fileSystem.OpenFile(imgPath), true);
 						}
 					}
 					return true;

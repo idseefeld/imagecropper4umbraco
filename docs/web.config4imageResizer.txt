@@ -1,0 +1,14 @@
+
+<configuration>
+	</configSections>
+		<!--ImageResizer-->
+		<section name="resizer" type="ImageResizer.ResizerSection,ImageResizer"  requirePermission="false"  />
+	</configSections>
+
+	<resizer>
+		<!-- see http://imageresizing.net/docs/configuration-all for all options -->
+		<sizelimits imageWidth="0" imageHeight="0" totalWidth="3200" totalHeight="3200" totalBehavior="throwexception" />
+	</resizer>
+
+	...
+</configuration>

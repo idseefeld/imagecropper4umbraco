@@ -150,12 +150,8 @@ namespace idseefeld.de.imagecropper.imagecropper
                     }
                     else
                     {
-                        if (_fileSystem.FileExists(newPath))
-                            _fileSystem.DeleteFile(newPath);
-                        //_fileSystem.CopyFile(imgPath, newPath);
-						{
-							_fileSystem.AddFile(newPath, _fileSystem.OpenFile(imgPath));
-						}
+                        _fileSystem.AddFile(newPath, _fileSystem.OpenFile(imgPath), true);
+						
                         newImgSaved = true;
                     }
                 }

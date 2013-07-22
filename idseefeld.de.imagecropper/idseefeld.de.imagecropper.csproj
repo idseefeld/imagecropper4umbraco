@@ -43,6 +43,9 @@
     <Reference Include="controls">
       <HintPath>..\externals\controls.dll</HintPath>
     </Reference>
+    <Reference Include="ImageResizer">
+      <HintPath>..\packages\ImageResizer.3.3.3\lib\ImageResizer.dll</HintPath>
+    </Reference>
     <Reference Include="interfaces">
       <HintPath>..\externals\interfaces.dll</HintPath>
     </Reference>
@@ -90,6 +93,7 @@
     </Compile>
     <Compile Include="imagecropper\DataTypeData.cs" />
     <Compile Include="imagecropper\Helper.cs" />
+    <Compile Include="imagecropper\IImageResizeEngine.cs" />
     <Compile Include="imagecropper\ImageEventsForCropper.cs" />
     <Compile Include="imagecropper\ImageInfo.cs" />
     <Compile Include="imagecropper\ImageResizeEngineDefault.cs" />
@@ -99,6 +103,8 @@
     <Compile Include="imagecropper\SaveData.cs" />
     <Compile Include="imagecropper\SmartListBox.cs" />
     <Compile Include="imagecropper\UmbracoImage.cs" />
+    <Compile Include="imagecropper\ImageResizerProvider\ImageEngineImageResizer.cs" />
+    <Compile Include="imagecropper\ImageResizerProvider\ImageResizerFeatures.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyHelper.cs" />
   </ItemGroup>
@@ -111,6 +117,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="imagecropper\Resources\product-logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -21,7 +21,7 @@ namespace idseefeld.de.imagecropper.imagecropper
 		{
 			this.img = null;
 		}
-		public void GenerateImageByWidth(int newWidth, string imgRelativePath, string cropRelativePath, bool ignoreICC, ImageResizeEngineDefault ResizeEngine)
+		public void GenerateImageByWidth(int newWidth, string imgRelativePath, string cropRelativePath, bool ignoreICC, IImageResizeEngine ResizeEngine)
 		{
 			if (imgRelativePath == cropRelativePath)
 				return;
@@ -46,7 +46,7 @@ namespace idseefeld.de.imagecropper.imagecropper
 					ignoreICC);
 			}
 		}
-		public string GenerateImageByWidth(int newWidth, UmbracoImage umbImage, bool ignoreICC, ImageResizeEngineDefault ResizeEngine)
+		public string GenerateImageByWidth(int newWidth, UmbracoImage umbImage, bool ignoreICC, IImageResizeEngine ResizeEngine)
 		{
 			string result = umbImage.Src;
 			string newSrc = umbImage.Src.Substring(0, umbImage.Src.LastIndexOf('.')) + "_autoWidth" + newWidth + "." + umbImage.Extension;

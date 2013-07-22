@@ -12,7 +12,7 @@ using Umbraco.Core.Media;
 
 namespace idseefeld.de.imagecropper.imagecropper
 {
-    public class ImageResizeEngineDefault : PersitenceFactory
+    public class ImageResizeEngineDefault : PersitenceFactory, IImageResizeEngine
     {
         public bool saveNewImageSize(string imgPath, string fileExtension, string newPath)
         {
@@ -197,6 +197,39 @@ namespace idseefeld.de.imagecropper.imagecropper
         #endregion
 
 
-    }
+
+		#region IImageResizeEngine Member
+
+
+		public Control PluginPrevalueSettings()
+		{
+			return null;
+		}
+		public void RenderPrevalueSettings(HtmlTextWriter writer) { }
+		public void SetPrevalues(string values) { }
+		public string GetPrevalues(Control placeholder)
+		{
+			return String.Empty;
+		}
+
+		public void Load(XmlDocument xml)
+		{
+			return;
+		}
+		public string GetExtraHash()
+		{
+			return String.Empty;
+		}
+		public void GetExtraXml(ref XmlDocument doc, ref XmlNode root)
+		{
+			return;
+		}
+		public Control GetControls()
+		{
+			return null;
+		}
+
+		#endregion
+	}
 
 }

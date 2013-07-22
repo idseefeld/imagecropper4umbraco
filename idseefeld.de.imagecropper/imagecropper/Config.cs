@@ -3,17 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using Umbraco.Core.Media;
+using System.Reflection;
 
-namespace idseefeld.de.imagecropper.imagecropper
-{
-	public class Config
-	{
+namespace idseefeld.de.imagecropper.imagecropper {
+	public class Config {
 		public string UploadPropertyAlias { get; set; }
 		public string BackgroundColor { get; set; }
 		public int ResizeMax { get; set; }
 		public bool GenerateImages { get; set; }
 		public bool IgnoreICC { get; set; }
-		public ImageResizeEngineDefault ResizeEngine { get; set; }
+		//public ImageResizeEngineDefault ResizeEngine { get; set; }
+		public IImageResizeEngine ResizeEngine { get; set; }
+		public bool CustomProvider { get; set; }
 		public bool ShowIgnoreICC { get; set; }
 		public bool AutoGenerateImages { get; set; }
 		public bool CompatibilityModeJpeg { get; set; }
@@ -32,8 +33,28 @@ namespace idseefeld.de.imagecropper.imagecropper
 			versionedCropFiles = new List<string>();
 			newCropFiles = new List<string>();
 			cropHashDict = new Dictionary<string, string>();
+			this.CustomProvider = false;
 
-			ResizeEngine = new ImageResizeEngineDefault();
+			bool useDefaultEngine = true;
+			try
+			{
+				Assembly myDllAssembly =
+				   Assembly.LoadFile(
+				   String.Format("{0}\\ImageResizer.dll",
+				   System.Web.HttpRuntime.BinDirectory));
+				if (myDllAssembly != null)
+				{
+					ResizeEngine = new ImageEngineImageResizer();
+					this.CustomProvider = true;
+					useDefaultEngine = false;
+				}
+			}
+			catch { }
+
+			if (useDefaultEngine)
+			{
+				ResizeEngine = new ImageResizeEngineDefault();
+			}
 
 			string[] configData = configuration.Split('|');
 			if (configData.Length < 2) return;
@@ -47,7 +68,7 @@ namespace idseefeld.de.imagecropper.imagecropper
 			{
 				Quality = _quality;
 			}
-			if(Quality==0)
+			if (Quality == 0)
 			{
 				Quality = 90;
 			}
@@ -91,16 +112,14 @@ namespace idseefeld.de.imagecropper.imagecropper
 		}
 	}
 
-	public class ImageResizeEngineConfigSection : ConfigurationSection
-	{
+	public class ImageResizeEngineConfigSection : ConfigurationSection {
 		[ConfigurationProperty("provider", IsRequired = false)]
 		public ProviderCollection ResizerProvider
 		{
 			get { return (ProviderCollection)this["provider"]; }
 		}
 	}
-	public class ProviderElement : ConfigurationElement
-	{
+	public class ProviderElement : ConfigurationElement {
 		[ConfigurationProperty("name", IsRequired = true)]
 		public string Name
 		{
@@ -115,8 +134,7 @@ namespace idseefeld.de.imagecropper.imagecropper
 			set { this["type"] = value; }
 		}
 	}
-	public class ProviderCollection : ConfigurationElementCollection
-	{
+	public class ProviderCollection : ConfigurationElementCollection {
 		public ProviderElement this[int index]
 		{
 			get { return BaseGet(index) as ProviderElement; }

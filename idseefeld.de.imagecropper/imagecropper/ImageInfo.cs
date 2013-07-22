@@ -99,7 +99,7 @@ namespace idseefeld.de.imagecropper.imagecropper
 				Aspect = 0;
 			}
 		}
-		private string CreateCropBaseImage(int maxWidth, int width, int height, float aspect, DateTime dateStamp, ImageResizeEngineDefault ResizeEngine)
+		private string CreateCropBaseImage(int maxWidth, int width, int height, float aspect, DateTime dateStamp, IImageResizeEngine ResizeEngine)
 		{
 			if (maxWidth >= width || Name.EndsWith("_cb"))
 				return "";
@@ -203,7 +203,7 @@ namespace idseefeld.de.imagecropper.imagecropper
 
 			return extension;
 		}
-		public static string FixBrowserUnsupportedFormats(string relativeImagePath, ImageResizeEngineDefault ResizeEngine)
+		public static string FixBrowserUnsupportedFormats(string relativeImagePath, IImageResizeEngine ResizeEngine)
 		{
 			string adjustedPath = relativeImagePath;
 			string extension = relativeImagePath.Substring(relativeImagePath.LastIndexOf('.') + 1);

@@ -40,6 +40,8 @@ namespace idseefeld.de.imagecropper.imagecropper
 		protected CheckBox chkIgnoreICC  = new CheckBox ();
 		protected Label labelIgnoreICC = new Label ();
 
+		protected Label CustomProviderHint = new Label();
+
 		public Image imgImage = new Image();
 		public HiddenField hdnJson = new HiddenField();
 		public HiddenField hdnRaw = new HiddenField();
@@ -141,6 +143,12 @@ namespace idseefeld.de.imagecropper.imagecropper
 			labelIgnoreICC.Visible = config.ShowIgnoreICC;
 			featurePanel.Controls.Add(chkIgnoreICC);
 			featurePanel.Controls.Add(labelIgnoreICC);
+
+			if (!config.CustomProvider)
+			{
+				CustomProviderHint.Text = "<p style=\"color:red;\">ImageResizer.dll is missing. Cropper uses default render engine. Please reinstall Image Cropper Extended.</p>";
+				featurePanel.Controls.Add(CustomProviderHint);
+			}
 
 
 			Panel cropSelectorPanel = new Panel();

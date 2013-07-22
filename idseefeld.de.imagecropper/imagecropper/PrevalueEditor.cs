@@ -337,6 +337,10 @@ namespace idseefeld.de.imagecropper.imagecropper {
 			writer.Write("td.hintText{font-size:90%;color:#999;padding-bottom:10px;}");
 			writer.Write("</style>");
 
+			if (!config.CustomProvider)
+			{
+				writer.Write("<div style=\"background-color:red;color:#fff;padding:10px;\">ImageResizer.dll is missing. Cropper uses default render engine. Please reinstall Image Cropper Extended.</div>");
+			}
 			//writer.Write("<div style=\"float:left;overflow:hidden;\"><p><strong>General</strong></p></div>");
 			writer.Write(String.Format("<div style=\"float:left;overflow:hidden;width:100%;\"><a href='https://github.com/idseefeld/imagecropper4umbraco' target='_blank'><img src='{0}' align='right' /></a></div>",
 			Page.ClientScript.GetWebResourceUrl(typeof(PrevalueEditor), "idseefeld.de.imagecropper.imagecropper.Resources.product-logo.png")

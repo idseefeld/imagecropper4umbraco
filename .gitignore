@@ -32,9 +32,6 @@
 .builds
 *.dotCover
 
-##NuGet
-packages/*
-!packages/repositories.config
 
 #Allow NuGet.exe (do not ignore)
 !NuGet.exe

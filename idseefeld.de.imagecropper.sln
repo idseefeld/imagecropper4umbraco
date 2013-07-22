@@ -3,28 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "idseefeld.de.imagecropper", "idseefeld.de.imagecropper\idseefeld.de.imagecropper.csproj", "{675C9A37-D36B-4781-A9D6-449E8F043055}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "umb61x.local", "http://umb61x.local", "{3B9F262F-4B45-4B47-9E32-CA3EF3129E2B}"
-	ProjectSection(WebsiteProperties) = preProject
-		UseIISExpress = "false"
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
-		ProjectReferences = "{675C9A37-D36B-4781-A9D6-449E8F043055}|idseefeld.de.imagecropper.dll;"
-		Debug.AspNetCompiler.VirtualPath = "/umb61x.local"
-		Debug.AspNetCompiler.PhysicalPath = "..\..\..\..\..\inetpub\wwwroot\umb6.1.x\www\"
-		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\umb61x.local\"
-		Debug.AspNetCompiler.Updateable = "true"
-		Debug.AspNetCompiler.ForceOverwrite = "true"
-		Debug.AspNetCompiler.FixedNames = "false"
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.VirtualPath = "/umb61x.local"
-		Release.AspNetCompiler.PhysicalPath = "..\..\..\..\..\inetpub\wwwroot\umb6.1.x\www\"
-		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\umb61x.local\"
-		Release.AspNetCompiler.Updateable = "true"
-		Release.AspNetCompiler.ForceOverwrite = "true"
-		Release.AspNetCompiler.FixedNames = "false"
-		Release.AspNetCompiler.Debug = "False"
-		SlnRelativePath = "..\..\..\..\..\inetpub\wwwroot\umb6.1.x\www\"
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,10 +13,6 @@ Global
 		{675C9A37-D36B-4781-A9D6-449E8F043055}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{675C9A37-D36B-4781-A9D6-449E8F043055}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{675C9A37-D36B-4781-A9D6-449E8F043055}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3B9F262F-4B45-4B47-9E32-CA3EF3129E2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3B9F262F-4B45-4B47-9E32-CA3EF3129E2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3B9F262F-4B45-4B47-9E32-CA3EF3129E2B}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{3B9F262F-4B45-4B47-9E32-CA3EF3129E2B}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

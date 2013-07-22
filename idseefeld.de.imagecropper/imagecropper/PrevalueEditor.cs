@@ -334,6 +334,8 @@ namespace idseefeld.de.imagecropper.imagecropper {
 		protected override void Render(HtmlTextWriter writer)
 		{
 			writer.Write("<style type=\"text/css\">");
+			writer.Write("div.about{color:#006AB3;padding:10px;font-style:italic;}");
+			writer.Write("div.about a{color:#006AB3;}");
 			writer.Write("td.hintText{font-size:90%;color:#999;padding-bottom:10px;}");
 			writer.Write("</style>");
 
@@ -342,9 +344,13 @@ namespace idseefeld.de.imagecropper.imagecropper {
 				writer.Write("<div style=\"background-color:red;color:#fff;padding:10px;\">ImageResizer.dll is missing. Cropper uses default render engine. Please reinstall Image Cropper Extended.</div>");
 			}
 			//writer.Write("<div style=\"float:left;overflow:hidden;\"><p><strong>General</strong></p></div>");
-			writer.Write(String.Format("<div style=\"float:left;overflow:hidden;width:100%;\"><a href='https://github.com/idseefeld/imagecropper4umbraco' target='_blank'><img src='{0}' align='right' /></a></div>",
-			Page.ClientScript.GetWebResourceUrl(typeof(PrevalueEditor), "idseefeld.de.imagecropper.imagecropper.Resources.product-logo.png")
-				));
+			writer.Write(String.Format("<div style=\"float:left;overflow:hidden;width:100%;\"><a href='https://github.com/idseefeld/imagecropper4umbraco' target='_blank'><img src='{0}' align='right' /></a>{1}</div>",
+			Page.ClientScript.GetWebResourceUrl(
+				typeof(PrevalueEditor), 
+				"idseefeld.de.imagecropper.imagecropper.Resources.product-logo.png"),
+			config.CustomProvider ? "<div class=\"about\">Using ImageResizer as image render engine.<br /> For more information visit <a href=\"http://imageresizing.net\" target=\"_blank\">http://imageresizing.net</a>.</div>" : "")
+			);
+
 			writer.Write("<table style=\"clear:both\">");
 
 

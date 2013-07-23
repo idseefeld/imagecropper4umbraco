@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Umbraco.Core.IO;
-using System.IO;
 
 namespace idseefeld.de.imagecropper.imagecropper
 {
@@ -24,7 +23,7 @@ namespace idseefeld.de.imagecropper.imagecropper
 		public string CopyToHashFile(string sourceFile, string name, string extension)
 		{
 			string newPath = String.Empty;
-			if (!File.Exists(sourceFile))
+			if (!_fileSystem.FileExists(sourceFile))
 				return newPath;
 
 			string path = sourceFile.Substring(0, sourceFile.LastIndexOf('\\'));

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.IO;
 using System.Web;
 using Umbraco.Core.IO;
 using umbraco.cms.businesslogic.media;
@@ -17,7 +16,7 @@ namespace idseefeld.de.imagecropper.imagecropper
 		public int Width { get; set; }
 		public int Height { get; set; }
 		public float Aspect { get; set; }
-		public DateTime DateStamp { get; set; }
+		public DateTimeOffset DateStamp { get; set; }
 		public string Path { get; set; }
 		public string RelativePath { get; set; }
 
@@ -33,28 +32,30 @@ namespace idseefeld.de.imagecropper.imagecropper
 			string relPath = RelativePath.Substring(0, RelativePath.LastIndexOf('/') + 1);
 
 			Path = IOHelper.MapPath(relativeFilePath);
-			if (File.Exists(Path))
+			
+			if (_fileSystem.FileExists(Path))
 			{
 				string fileName = Path.Substring(Path.LastIndexOf('\\') + 1);
 				Name = fileName.Substring(0, fileName.LastIndexOf('.'));
 
-				byte[] buffer = null;
+				//byte[] buffer = null;
 
-				using (FileStream fs = new FileStream(Path, FileMode.Open, FileAccess.Read))
-				{
-					buffer = new byte[fs.Length];
-					fs.Read(buffer, 0, (int)fs.Length);
-					fs.Close();
-				}
+				//using (FileStream fs = new FileStream(Path, FileMode.Open, FileAccess.Read))
+				//{
+				//    buffer = new byte[fs.Length];
+				//    fs.Read(buffer, 0, (int)fs.Length);
+				//    fs.Close();
+				//}
 
 				try
 				{
-					image = Image.FromStream(new MemoryStream(buffer));
+					//image = Image.FromStream(new System.IO.MemoryStream(buffer));
+					image = Image.FromStream(_fileSystem.OpenFile(Path));
 
 					Width = image.Width;
 					Height = image.Height;
 					Aspect = (float)Width / Height;
-					DateStamp = File.GetLastWriteTime(Path);
+					DateStamp = _fileSystem.GetLastModified(Path);
 
 					if (config.ResizeMax > 0 && !isCropBase)
 					{
@@ -65,20 +66,21 @@ namespace idseefeld.de.imagecropper.imagecropper
 							fileName = Path.Substring(Path.LastIndexOf('\\') + 1);
 							RelativePath = relPath + fileName;
 							Name = fileName.Substring(0, fileName.LastIndexOf('.'));
-							using (FileStream fs = new FileStream(Path, FileMode.Open, FileAccess.Read))
-							{
-								buffer = new byte[fs.Length];
-								fs.Read(buffer, 0, (int)fs.Length);
-								fs.Close();
-							}
+							//using (FileStream fs = new FileStream(Path, FileMode.Open, FileAccess.Read))
+							//{
+							//    buffer = new byte[fs.Length];
+							//    fs.Read(buffer, 0, (int)fs.Length);
+							//    fs.Close();
+							//}
 							try
 							{
-								image = Image.FromStream(new MemoryStream(buffer));
+								//image = Image.FromStream(new MemoryStream(buffer));
+								image = Image.FromStream(_fileSystem.OpenFile(Path));
 
 								Width = image.Width;
 								Height = image.Height;
 								Aspect = (float)Width / Height;
-								DateStamp = File.GetLastWriteTime(Path);
+								DateStamp = _fileSystem.GetLastModified(Path);
 								isCropBase = true;
 							}
 							catch { }
@@ -99,7 +101,7 @@ namespace idseefeld.de.imagecropper.imagecropper
 				Aspect = 0;
 			}
 		}
-		private string CreateCropBaseImage(int maxWidth, int width, int height, float aspect, DateTime dateStamp, IImageResizeEngine ResizeEngine)
+		private string CreateCropBaseImage(int maxWidth, int width, int height, float aspect, DateTimeOffset dateStamp, IImageResizeEngine ResizeEngine)
 		{
 			if (maxWidth >= width || Name.EndsWith("_cb"))
 				return "";
@@ -108,15 +110,15 @@ namespace idseefeld.de.imagecropper.imagecropper
 			string path = Path.Substring(0, Path.LastIndexOf('\\'));
 			string ext = ImageTransform.GetAdjustedFileExtension(Path);// Path.Substring(Path.LastIndexOf('.') + 1);
 			string newPath = String.Format("{0}\\{1}.{2}", path, cropBaseName, ext);
-			if (File.Exists(newPath))
+			if (this._fileSystem.FileExists(newPath))
 			{
-				DateTime cropDateStamp = File.GetLastWriteTime(newPath);
+				DateTimeOffset cropDateStamp = _fileSystem.GetLastModified(newPath);
 				if (cropDateStamp.CompareTo(dateStamp) > 0)
 					return newPath;
 			}
 
 			bool forceResize = true;//must
-			ResizeEngine.saveNewImageSize(Path, ext, newPath, maxWidth, forceResize, width, _config.IgnoreICC);
+			ResizeEngine.saveNewImageSize(Path, ext, newPath, maxWidth, forceResize, width, _config.IgnoreICC, false);
 
 			return newPath;
 		}
@@ -175,7 +177,8 @@ namespace idseefeld.de.imagecropper.imagecropper
 						cHeight,
 						tWidth,
 						tHeight,
-						config
+						config,
+						_fileSystem
 					);
 					if (ParentIsDocument)
 					{
@@ -215,22 +218,21 @@ namespace idseefeld.de.imagecropper.imagecropper
 					extension);
 				string sourceFile = IOHelper.MapPath(relativeImagePath);
 				string newFile = IOHelper.MapPath(adjustedPath);
-
-				if (!File.Exists(newFile))
-					ResizeEngine.saveNewImageSize(sourceFile, extension, newFile);
+				
+				ResizeEngine.saveNewImageSize(sourceFile, extension, newFile, true);
 			}
 			return adjustedPath;
 		}
-		public static string Execute(string sourceFile, string name, int cropX, int cropY, int cropWidth, int cropHeight, int sizeWidth, int sizeHeight, Config config)
+		public static string Execute(string sourceFile, string name, int cropX, int cropY, int cropWidth, int cropHeight, int sizeWidth, int sizeHeight, Config config, MediaFileSystem _fileSystem)
 		{
 			string result = "";
-			if (!File.Exists(sourceFile)) return result;
+			if (!_fileSystem.FileExists(sourceFile)) return result;
 
 			string path = sourceFile.Substring(0, sourceFile.LastIndexOf('\\'));
 			string ext = ImageTransform.GetAdjustedFileExtension(sourceFile);
 			string newPath = String.Format("{0}\\{1}.{2}", path, name, ext);
 			bool forceResize = true;//must
-			config.ResizeEngine.saveCroppedNewImageSize(sourceFile, ext, newPath, sizeWidth, forceResize, 0, sizeHeight, cropX, cropY, cropWidth, cropHeight, config.Quality, config.IgnoreICC);
+			config.ResizeEngine.saveCroppedNewImageSize(sourceFile, ext, newPath, sizeWidth, forceResize, 0, sizeHeight, cropX, cropY, cropWidth, cropHeight, config.Quality, config.IgnoreICC, false);
 			result = newPath;
 			return result;
 		}

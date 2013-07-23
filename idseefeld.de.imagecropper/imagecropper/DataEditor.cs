@@ -9,7 +9,6 @@ using umbraco.cms.businesslogic.member;
 using umbraco.cms.businesslogic.property;
 using umbraco.cms.businesslogic.web;
 using Content = umbraco.cms.businesslogic.Content;
-using System.IO;
 using System.Web.Hosting;
 using Umbraco.Core.IO;
 using umbraco.editorControls;
@@ -95,7 +94,8 @@ namespace idseefeld.de.imagecropper.imagecropper
 
 			string relativeImagePath = ImageTransform.FixBrowserUnsupportedFormats(
 				uploadControl.Text,
-				config.ResizeEngine);
+				config.ResizeEngine
+			);
 
 			string uploadControlClientID = uploadControl.ClientID;
 			string itemId = Page.Request.QueryString["id"];

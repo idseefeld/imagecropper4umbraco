@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using System.IO;
 using System.Web;
 
 using umbraco.Utils;
@@ -9,7 +8,7 @@ using umbraco.cms.businesslogic.media;
 
 namespace idseefeld.de.imagecropper.imagecropper
 {
-	public class ImageTools
+	public class ImageTools: PersitenceFactory
 	{
 		private Media img;
 
@@ -28,11 +27,11 @@ namespace idseefeld.de.imagecropper.imagecropper
 
 			string imgPath = HttpContext.Current.Server.MapPath(imgRelativePath);
 			string cropPath = HttpContext.Current.Server.MapPath(cropRelativePath);
-			if (File.Exists(cropPath))
+			if (_fileSystem.FileExists(cropPath))
 			{
-				File.Delete(cropPath);
+				_fileSystem.DeleteFile(cropPath);
 			}
-			if (File.Exists(imgPath))
+			if (_fileSystem.FileExists(imgPath))
 			{
 				Bitmap img = new Bitmap(imgPath);
 				string imgExtension = imgPath.Substring(imgPath.LastIndexOf('.') + 1);
@@ -43,7 +42,8 @@ namespace idseefeld.de.imagecropper.imagecropper
 					imgExtension,
 					cropPath,
 					newWidth, false, img.Width,
-					ignoreICC);
+					ignoreICC,
+					false);
 			}
 		}
 		public string GenerateImageByWidth(int newWidth, UmbracoImage umbImage, bool ignoreICC, IImageResizeEngine ResizeEngine)
@@ -51,7 +51,7 @@ namespace idseefeld.de.imagecropper.imagecropper
 			string result = umbImage.Src;
 			string newSrc = umbImage.Src.Substring(0, umbImage.Src.LastIndexOf('.')) + "_autoWidth" + newWidth + "." + umbImage.Extension;
 			string newPath = HttpContext.Current.Server.MapPath(newSrc);
-			if (File.Exists(newPath))
+			if (_fileSystem.FileExists(newPath))
 			{
 				return newSrc;
 			}
@@ -61,7 +61,8 @@ namespace idseefeld.de.imagecropper.imagecropper
 					umbImage.Extension,
 					newPath,
 					newWidth, false, umbImage.Width,
-					ignoreICC))
+					ignoreICC,
+					false))
 				result = newSrc;
 
 			return result;

@@ -3,13 +3,13 @@ using System.Reflection;
 
 namespace idseefeld.de.imagecropper.imagecropper
 {
-    public class DataType : umbraco.cms.businesslogic.datatype.BaseDataType, umbraco.interfaces.IDataType
+	public class DataType : umbraco.cms.businesslogic.datatype.BaseDataType, umbraco.interfaces.IDataType
     {
 		public const string CROP_POSTFIX = "_HASHEDCROP";
 
         private umbraco.interfaces.IDataEditor _editor;
         private umbraco.interfaces.IData _baseData;
-        private PrevalueEditor _prevalueEditor;
+		private umbraco.interfaces.IDataPrevalue _prevalueEditor;
 
         public override umbraco.interfaces.IDataEditor DataEditor
         {

@@ -13,7 +13,6 @@ using umbraco.cms.businesslogic.member;
 using umbraco.editorControls.uploadfield;
 using umbraco.cms.businesslogic.property;
 using umbraco.presentation;
-using System.IO;
 using Umbraco.Core.IO;
 
 namespace idseefeld.de.imagecropper.imagecropper

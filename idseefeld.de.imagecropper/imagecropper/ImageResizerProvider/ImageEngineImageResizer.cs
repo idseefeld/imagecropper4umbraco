@@ -2,7 +2,6 @@
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.IO;
 using ImageResizer;
 using umbraco.BusinessLogic;
 using System.Web;
@@ -213,7 +212,7 @@ namespace idseefeld.de.imagecropper.imagecropper {
 			//TODO: check advanced filters are installed
 			return true;
 		}
-		public bool saveNewImageSize(string imgPath, string fileExtension, string newPath)
+		public bool saveNewImageSize(string imgPath, string fileExtension, string newPath, bool onlyIfNew)
 		{
 			int newWidth = 0;
 			int oldWidth = 0;
@@ -223,12 +222,12 @@ namespace idseefeld.de.imagecropper.imagecropper {
 			{
 				newWidth = oldWidth = bm.Width;
 			}
-			return saveNewImageSize(imgPath, fileExtension, newPath, newWidth, forceResize, oldWidth, ignoreICC);
+			return saveNewImageSize(imgPath, fileExtension, newPath, newWidth, forceResize, oldWidth, ignoreICC, onlyIfNew);
 		}
-		public bool saveNewImageSize(string imgPath, string fileExtension, string newPath, int newWidth, bool forceResize, int oldWidth, bool ignoreICC)
+		public bool saveNewImageSize(string imgPath, string fileExtension, string newPath, int newWidth, bool forceResize, int oldWidth, bool ignoreICC, bool onlyIfNew)
 		{
 			return saveCroppedNewImageSize(imgPath, fileExtension, newPath, newWidth, forceResize, oldWidth,
-				0, 0, 0, 0, 0, 100, ignoreICC);
+				0, 0, 0, 0, 0, 100, ignoreICC, onlyIfNew);
 		}
 
 		public bool saveCroppedNewImageSize(
@@ -237,8 +236,13 @@ namespace idseefeld.de.imagecropper.imagecropper {
 			int newWidth, bool forceResize, int oldWidth,
 			int sizeHeight,
 			int cropX, int cropY, int cropWidth, int cropHeight,
-			int quality, bool ignoreICC)
+			int quality, bool ignoreICC, bool onlyIfNew)
 		{
+			if (onlyIfNew && _fileSystem.FileExists(newPath))
+			{
+				return false;
+			}
+
 			//ToDo: implement new feature setup
 			ImageResizerFeatures irFeatures = ReadFeatureSettings();
 
@@ -295,8 +299,8 @@ namespace idseefeld.de.imagecropper.imagecropper {
 								if (irFeatures.Rotation != 0)
 									resizeSettings.Rotate = irFeatures.Rotation;
 							}
-							Stream sourceStream = _fileSystem.OpenFile(imgPath);
-							Stream destinationStream = new MemoryStream();
+							System.IO.Stream sourceStream = _fileSystem.OpenFile(imgPath);
+							System.IO.Stream destinationStream = new System.IO.MemoryStream();
 							ImageJob irJob = new ImageJob(sourceStream, destinationStream, resizeSettings);
 							ImageBuilder.Current.Build(irJob);
 							_fileSystem.AddFile(newPath, destinationStream, true);

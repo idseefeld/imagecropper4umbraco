@@ -2,7 +2,6 @@
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.IO;
 using umbraco.BusinessLogic;
 using System.Web;
 using Umbraco.Core.IO;
@@ -14,7 +13,7 @@ namespace idseefeld.de.imagecropper.imagecropper
 {
     public class ImageResizeEngineDefault : PersitenceFactory, IImageResizeEngine
     {
-        public bool saveNewImageSize(string imgPath, string fileExtension, string newPath)
+		public bool saveNewImageSize(string imgPath, string fileExtension, string newPath, bool onlyIfNew)
         {
             int newWidth = 0;
             int oldWidth = 0;
@@ -24,12 +23,12 @@ namespace idseefeld.de.imagecropper.imagecropper
             {
                 newWidth = oldWidth = bm.Width;
             }
-            return saveNewImageSize(imgPath, fileExtension, newPath, newWidth, forceResize, oldWidth, ignoreICC);
+            return saveNewImageSize(imgPath, fileExtension, newPath, newWidth, forceResize, oldWidth, ignoreICC, onlyIfNew);
         }
-        public bool saveNewImageSize(string imgPath, string fileExtension, string newPath, int newWidth, bool forceResize, int oldWidth, bool ignoreICC)
+		public bool saveNewImageSize(string imgPath, string fileExtension, string newPath, int newWidth, bool forceResize, int oldWidth, bool ignoreICC, bool onlyIfNew)
         {
             return saveCroppedNewImageSize(imgPath, fileExtension, newPath, newWidth, forceResize, oldWidth,
-                0, 0, 0, 0, 0, 100, ignoreICC);
+                0, 0, 0, 0, 0, 100, ignoreICC, onlyIfNew);
         }
 
         public bool saveCroppedNewImageSize(
@@ -38,11 +37,16 @@ namespace idseefeld.de.imagecropper.imagecropper
             int newWidth, bool forceResize, int oldWidth,
             int sizeHeight,
             int cropX, int cropY, int cropWidth, int cropHeight,
-            int quality, bool ignoreICC)
+			int quality, bool ignoreICC, bool onlyIfNew)
         {
+			if (onlyIfNew && _fileSystem.FileExists(newPath))
+			{
+				return false;
+			}
+
+            bool newImgSaved = false;
             if (fileExtension.StartsWith("."))
                 fileExtension = fileExtension.Substring(1);
-            bool newImgSaved = false;
             InterpolationMode iMode = GetInterpolationMode(oldWidth, newWidth);
             try
             {
@@ -121,7 +125,7 @@ namespace idseefeld.de.imagecropper.imagecropper
                                     _fileSystem.DeleteFile(newPath);
 
                                 //bmp.Save(newPath, imgEncoder, imgEncoderParameters);
-                                var ms = new MemoryStream();
+                                var ms = new System.IO.MemoryStream();
                                 bmp.Save(ms, imgEncoder, imgEncoderParameters);
                                 ms.Seek(0, 0);
 
@@ -132,7 +136,7 @@ namespace idseefeld.de.imagecropper.imagecropper
                                 {
                                     string newPathJpg = String.Format("{0}.jpg", newPath.Remove(newPath.LastIndexOf('.')));
                                     imgEncoder = GetEncoder(ImageFormat.Jpeg);
-                                    var msCopy = new MemoryStream();
+                                    var msCopy = new System.IO.MemoryStream();
                                     graph.FillRectangle(new SolidBrush(Color.White), 0, 0, newWidth, newHeight);
                                     ms.Seek(0, 0);
                                     graph.DrawImage(Image.FromStream(ms), new Rectangle(0, 0, newWidth, newHeight));

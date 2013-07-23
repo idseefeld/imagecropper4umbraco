@@ -38,52 +38,40 @@ namespace idseefeld.de.imagecropper.imagecropper
 				string fileName = Path.Substring(Path.LastIndexOf('\\') + 1);
 				Name = fileName.Substring(0, fileName.LastIndexOf('.'));
 
-				//byte[] buffer = null;
-
-				//using (FileStream fs = new FileStream(Path, FileMode.Open, FileAccess.Read))
-				//{
-				//    buffer = new byte[fs.Length];
-				//    fs.Read(buffer, 0, (int)fs.Length);
-				//    fs.Close();
-				//}
-
 				try
 				{
-					//image = Image.FromStream(new System.IO.MemoryStream(buffer));
-					image = Image.FromStream(_fileSystem.OpenFile(Path));
-
-					Width = image.Width;
-					Height = image.Height;
-					Aspect = (float)Width / Height;
-					DateStamp = _fileSystem.GetLastModified(Path);
-
-					if (config.ResizeMax > 0 && !isCropBase)
+					using (image = Image.FromStream(_fileSystem.OpenFile(Path)))
 					{
-						string newPath = CreateCropBaseImage(config.ResizeMax, Width, Height, Aspect, DateStamp, config.ResizeEngine);
-						if (!String.IsNullOrEmpty(newPath))
-						{
-							Path = newPath;
-							fileName = Path.Substring(Path.LastIndexOf('\\') + 1);
-							RelativePath = relPath + fileName;
-							Name = fileName.Substring(0, fileName.LastIndexOf('.'));
-							//using (FileStream fs = new FileStream(Path, FileMode.Open, FileAccess.Read))
-							//{
-							//    buffer = new byte[fs.Length];
-							//    fs.Read(buffer, 0, (int)fs.Length);
-							//    fs.Close();
-							//}
-							try
-							{
-								//image = Image.FromStream(new MemoryStream(buffer));
-								image = Image.FromStream(_fileSystem.OpenFile(Path));
 
-								Width = image.Width;
-								Height = image.Height;
-								Aspect = (float)Width / Height;
-								DateStamp = _fileSystem.GetLastModified(Path);
-								isCropBase = true;
+						Width = image.Width;
+						Height = image.Height;
+						Aspect = (float)Width / Height;
+						DateStamp = _fileSystem.GetLastModified(Path);
+
+						if (config.ResizeMax > 0 && !isCropBase)
+						{
+							string newPath = CreateCropBaseImage(config.ResizeMax, Width, Height, Aspect, DateStamp, config.ResizeEngine);
+							if (!String.IsNullOrEmpty(newPath))
+							{
+								Path = newPath;
+								fileName = Path.Substring(Path.LastIndexOf('\\') + 1);
+								RelativePath = relPath + fileName;
+								Name = fileName.Substring(0, fileName.LastIndexOf('.'));
+								
+								try
+								{
+									using (image = Image.FromStream(_fileSystem.OpenFile(Path)))
+									{
+
+										Width = image.Width;
+										Height = image.Height;
+										Aspect = (float)Width / Height;
+										DateStamp = _fileSystem.GetLastModified(Path);
+										isCropBase = true;
+									}
+								}
+								catch { }
 							}
-							catch { }
 						}
 					}
 				}
@@ -134,9 +122,20 @@ namespace idseefeld.de.imagecropper.imagecropper
 
 		public void GenerateThumbnails(SaveData saveData, Config config)
 		{
+			GenerateThumbnails(saveData, config, -1);
+		}
+		public void GenerateThumbnails(SaveData saveData, Config config, int cropIndex)
+		{
 			if (config.GenerateImages)
 			{
-				for (int i = 0; i < config.presets.Count; i++)
+				int startIndex = 0;
+				int maxIndex = config.presets.Count;
+				if (cropIndex >= 0)
+				{
+					startIndex = cropIndex;
+					maxIndex = startIndex + 1;
+				}
+				for (int i = startIndex; i < maxIndex; i++)
 				{
 					Crop crop = (Crop)saveData.data[i];
 					Preset preset = (Preset)config.presets[i];

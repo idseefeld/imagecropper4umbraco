@@ -58,5 +58,5 @@ namespace idseefeld.de.imagecropper.imagecropper
                 return version.Major*1000 + version.Minor*100;
             }
         }
-    }
+	}
 }

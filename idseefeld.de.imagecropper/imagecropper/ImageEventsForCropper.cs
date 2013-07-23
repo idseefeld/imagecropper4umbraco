@@ -167,7 +167,7 @@ namespace idseefeld.de.imagecropper.imagecropper
 						//see: idseefeld.de.imagecropper.imagecropper.DataEditor.Save() for how to setup cropper default property.Value
 						StringBuilder sbRaw = new StringBuilder();
 						ImageInfo imageInfo = new ImageInfo(imgUrl, config, parentIsDocument);
-						int i = 1;
+						int cropIndex = 1;
 						foreach (var presetConfig in presets)
 						{
 							Preset preset = (Preset)presetConfig;
@@ -182,19 +182,20 @@ namespace idseefeld.de.imagecropper.imagecropper
 								crop.Y2 = preset.TargetHeight;
 							}
 							sbRaw.Append(String.Format("{0},{1},{2},{3}", crop.X, crop.Y, crop.X2, crop.Y2));
-							if (i < presets.Count) {
+							if (cropIndex < presets.Count) {
 								sbRaw.Append(";");
 							}
-							i++;
 							if (config.GenerateImages) {
 								GenerateCrop(
 									preset,
 									imgUrl,
 									config,
 									parentIsDocument,
-									prop.Value == null ? String.Empty : prop.Value.ToString()
+									prop.Value == null ? String.Empty : prop.Value.ToString(),
+									cropIndex - 1
 								);
 							}
+							cropIndex++;
 						}
 						SaveData saveData = new SaveData(sbRaw.ToString());
 						//save cropper default property.Value
@@ -204,7 +205,7 @@ namespace idseefeld.de.imagecropper.imagecropper
 			}
 		}
 
-		private static void GenerateCrop(Preset preset, string imgUrl, Config config, bool parentIsDocument, string savedValues)
+		private static void GenerateCrop(Preset preset, string imgUrl, Config config, bool parentIsDocument, string savedValues, int cropIndex)
 		{
 			string result = String.Empty;
 			if (String.IsNullOrEmpty(preset.Name))
@@ -226,7 +227,7 @@ namespace idseefeld.de.imagecropper.imagecropper
 			}
 			DataEditor.ConfigurateCrops(config, xml, imgInfo, sbJson, sbRaw);
 			SaveData data = new SaveData(sbRaw.ToString());
-			imgInfo.GenerateThumbnails(data, config);
+			imgInfo.GenerateThumbnails(data, config, cropIndex);
 		}
 	}
 }

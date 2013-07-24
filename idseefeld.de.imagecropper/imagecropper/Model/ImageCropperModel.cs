@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Web;
 using System.Xml;
 using System.Xml.XPath;
 using idseefeld.de.imagecropper.imagecropper;
 
 namespace idseefeld.de.imagecropper.Model {
-	//<crop name="fixWidth" x="0" y="441" x2="2815" y2="1475" width="300" height="110" url="/media/1001/p1010800_fixWidth.jpg" newurl="/media/1001/cda045406bf121386045cc780c9a6ac3_HASHEDCROP.jpg" />
+
 	public class CropModel {
 		public int Width { get; private set; }
 		public int Height { get; private set; }
@@ -43,7 +44,28 @@ namespace idseefeld.de.imagecropper.Model {
 
 		public List<CropModel> Crops { get; private set; }
 
-		public ImageCropperModel(string propertyValue)
+		public ImageCropperModel(string propertyValue, string cropperName = "")
+		{
+			if (String.IsNullOrEmpty(cropperName))
+			{
+				Initialise(propertyValue);
+				return;
+			}
+
+			object cache = HttpContext.Current.Items[cropperName];
+			if (cache != null)
+			{
+				Crops = (List<CropModel>)HttpContext.Current.Items[cropperName];
+			}
+			else
+			{
+				Initialise(propertyValue);
+				HttpContext.Current.Items[cropperName] = Crops;
+			}
+		}
+
+
+		private void Initialise(string propertyValue)
 		{
 			_data.LoadXml(propertyValue);
 			XmlNodeList nodes = _data.DocumentElement.SelectNodes("crop");

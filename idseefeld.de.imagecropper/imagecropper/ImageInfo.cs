@@ -37,49 +37,53 @@ namespace idseefeld.de.imagecropper.imagecropper
 			{
 				string fileName = Path.Substring(Path.LastIndexOf('\\') + 1);
 				Name = fileName.Substring(0, fileName.LastIndexOf('.'));
-
-				try
+				using (System.IO.Stream _stream = _fileSystem.OpenFile(Path))
 				{
-					using (image = Image.FromStream(_fileSystem.OpenFile(Path)))
+					try
 					{
-
-						Width = image.Width;
-						Height = image.Height;
-						Aspect = (float)Width / Height;
-						DateStamp = _fileSystem.GetLastModified(Path);
-
-						if (config.ResizeMax > 0 && !isCropBase)
+						using (image = Image.FromStream(_stream))
 						{
-							string newPath = CreateCropBaseImage(config.ResizeMax, Width, Height, Aspect, DateStamp, config.ResizeEngine);
-							if (!String.IsNullOrEmpty(newPath))
-							{
-								Path = newPath;
-								fileName = Path.Substring(Path.LastIndexOf('\\') + 1);
-								RelativePath = relPath + fileName;
-								Name = fileName.Substring(0, fileName.LastIndexOf('.'));
-								
-								try
-								{
-									using (image = Image.FromStream(_fileSystem.OpenFile(Path)))
-									{
 
-										Width = image.Width;
-										Height = image.Height;
-										Aspect = (float)Width / Height;
-										DateStamp = _fileSystem.GetLastModified(Path);
-										isCropBase = true;
+							Width = image.Width;
+							Height = image.Height;
+							Aspect = (float)Width / Height;
+							DateStamp = _fileSystem.GetLastModified(Path);
+
+							if (config.ResizeMax > 0 && !isCropBase)
+							{
+								string newPath = CreateCropBaseImage(config.ResizeMax, Width, Height, Aspect, DateStamp, config.ResizeEngine);
+								if (!String.IsNullOrEmpty(newPath))
+								{
+									Path = newPath;
+									fileName = Path.Substring(Path.LastIndexOf('\\') + 1);
+									RelativePath = relPath + fileName;
+									Name = fileName.Substring(0, fileName.LastIndexOf('.'));
+									using (System.IO.Stream _stream2 = _fileSystem.OpenFile(Path))
+									{
+										try
+										{
+											using (image = Image.FromStream(_stream2))
+											{
+
+												Width = image.Width;
+												Height = image.Height;
+												Aspect = (float)Width / Height;
+												DateStamp = _fileSystem.GetLastModified(Path);
+												isCropBase = true;
+											}
+										}
+										catch { }
 									}
 								}
-								catch { }
 							}
 						}
 					}
-				}
-				catch (Exception)
-				{
-					Width = 0;
-					Height = 0;
-					Aspect = 0;
+					catch (Exception)
+					{
+						Width = 0;
+						Height = 0;
+						Aspect = 0;
+					}
 				}
 			}
 			else

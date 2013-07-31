@@ -5,7 +5,7 @@ namespace idseefeld.de.imagecropper.imagecropper {
 	public class DataType : umbraco.cms.businesslogic.datatype.BaseDataType, umbraco.interfaces.IDataType {
 		public const string CROP_POSTFIX = "_HASHEDCROP";
 
-		private const bool USE_NEW_PREVALVUEEDITOR = true;
+		private const bool USE_NEW_PREVALVUEEDITOR = false;
 		private umbraco.interfaces.IDataEditor _editor;
 		private umbraco.interfaces.IData _baseData;
 		private umbraco.interfaces.IDataPrevalue _prevalueEditor;

@@ -202,7 +202,6 @@ namespace idseefeld.de.imagecropper.imagecropper {
 				{
 					_features.Flip = RotateFlipType.RotateNoneFlipX;
 				}
-				//TODO: check
 				_features.AdvancedFiltersInstalled = CheckAdvancedFiltersInstalled();
 			}
 			return _features;
@@ -238,11 +237,13 @@ namespace idseefeld.de.imagecropper.imagecropper {
 			int cropX, int cropY, int cropWidth, int cropHeight,
 			int quality, bool ignoreICC, bool onlyIfNew)
 		{
+			bool newImgSaved = false;
+			bool readyToWrite = false;
+
 			if (onlyIfNew && _fileSystem.FileExists(newPath))
 			{
-				return false;
+				return newImgSaved;
 			}
-
 			//ToDo: implement new feature setup
 			ImageResizerFeatures irFeatures = ReadFeatureSettings();
 
@@ -299,26 +300,32 @@ namespace idseefeld.de.imagecropper.imagecropper {
 								if (irFeatures.Rotation != 0)
 									resizeSettings.Rotate = irFeatures.Rotation;
 							}
-							System.IO.Stream sourceStream = _fileSystem.OpenFile(imgPath);
-							System.IO.Stream destinationStream = new System.IO.MemoryStream();
-							ImageJob irJob = new ImageJob(sourceStream, destinationStream, resizeSettings);
-							ImageBuilder.Current.Build(irJob);
-							_fileSystem.AddFile(newPath, destinationStream, true);
+							using (System.IO.Stream sourceStream = _fileSystem.OpenFile(imgPath),
+								destinationStream = new System.IO.MemoryStream())
+							{
+								ImageJob irJob = new ImageJob(sourceStream, destinationStream, resizeSettings);
+								ImageBuilder.Current.Build(irJob);
+								readyToWrite = true;
+								_fileSystem.AddFile(newPath, destinationStream, true);
+							}
 						}
 						else
 						{
-							_fileSystem.AddFile(newPath, _fileSystem.OpenFile(imgPath), true);
+							using (System.IO.Stream sourceStream = _fileSystem.OpenFile(imgPath))
+							{
+								_fileSystem.AddFile(newPath, sourceStream, true);
+							}
 						}
 					}
-					return true;
+					newImgSaved = true;
 				}
 				catch (Exception ex)
 				{
 					Log.Add(LogTypes.Error, -1,
-						String.Format("ImageHelper could not resize the image {0}. Details: {1}",
+						String.Format("ImageHelper ImageResizerEngine could not resize the image {0}. Details: {1}",
 							imgPath, ex.Message));
-					return false;
 				}
+				return newImgSaved;
 
 			}
 		}

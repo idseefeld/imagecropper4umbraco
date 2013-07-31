@@ -12,7 +12,6 @@ namespace idseefeld.de.imagecropper.imagecropper {
 		public int ResizeMax { get; set; }
 		public bool GenerateImages { get; set; }
 		public bool IgnoreICC { get; set; }
-		//public ImageResizeEngineDefault ResizeEngine { get; set; }
 		public IImageResizeEngine ResizeEngine { get; set; }
 		public bool CustomProvider { get; set; }
 		public bool ShowIgnoreICC { get; set; }

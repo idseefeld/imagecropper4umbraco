@@ -30,8 +30,10 @@ namespace idseefeld.de.imagecropper.imagecropper
 			newPath = String.Format("{0}\\{1}.{2}", path, name, extension);
 
 			if (!_fileSystem.FileExists(newPath)){
-				//_fileSystem.CopyFile(sourceFile, newPath);
-				_fileSystem.AddFile(newPath, _fileSystem.OpenFile(sourceFile));
+				using (System.IO.Stream sourceStream = _fileSystem.OpenFile(sourceFile))
+				{
+					_fileSystem.AddFile(newPath, sourceStream);
+				}
 			}
 			return newPath;
 		}

@@ -5,6 +5,7 @@ using Umbraco.Core.IO;
 using umbraco.cms.businesslogic.media;
 using umbraco.Utils;
 using Umbraco.Core.Media;
+using umbraco.BusinessLogic;
 
 
 namespace idseefeld.de.imagecropper.imagecropper
@@ -234,9 +235,40 @@ namespace idseefeld.de.imagecropper.imagecropper
 			string path = sourceFile.Substring(0, sourceFile.LastIndexOf('\\'));
 			string ext = ImageTransform.GetAdjustedFileExtension(sourceFile);
 			string newPath = String.Format("{0}\\{1}.{2}", path, name, ext);
-			bool forceResize = true;//must
-			config.ResizeEngine.saveCroppedNewImageSize(sourceFile, ext, newPath, sizeWidth, forceResize, 0, sizeHeight, cropX, cropY, cropWidth, cropHeight, config.Quality, config.IgnoreICC, false);
-			result = newPath;
+			bool forceResize = true;//must, but can not remeber why - TODO: check this
+			bool onlyIfNew = false;
+			int tryCounter = 1;
+			int maxTry = 2;
+			bool tryAgain = true;
+			do
+			{
+				if (tryCounter > 1)
+				{
+					//TODO: check this!
+					//This might be a work around, because I can not figure out why 
+					//the newPath image is in use by another process
+
+					//in case the crop image is in use by another process lets 
+					//force Garbage Collection,
+					GC.Collect();
+					//wait ...
+					GC.WaitForPendingFinalizers();
+					//and try again
+					Log.Add(LogTypes.Error, -1, "ImageHelper waiWaitForPendingFinalizers");
+				}
+				if (config.ResizeEngine.saveCroppedNewImageSize(sourceFile, ext, newPath, sizeWidth, forceResize, 0, sizeHeight, cropX, cropY, cropWidth, cropHeight, config.Quality, config.IgnoreICC, onlyIfNew))
+				{
+					tryAgain = false;
+					result = newPath;
+				}
+
+				tryCounter++;
+				if (tryCounter > maxTry)
+				{
+					tryAgain = false;
+				}
+			} while (tryAgain);
+
 			return result;
 		}
 

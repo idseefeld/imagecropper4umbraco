@@ -167,6 +167,13 @@ namespace idseefeld.de.imagecropper.imagecropper {
 			}
 			catch (Exception ex)
 			{
+				//for version 6.x only
+				//Umbraco.Core.Logging.LogHelper.Error<ImageEngineImageResizer>(
+				//           String.Format("ImageHelper DefaultEngine could not resize the image {0}. Details: {1}",
+				//               imgPath, ex.Message),
+				//               ex);
+
+				//for version 4.11.x and higher
 				Log.Add(LogTypes.Error, -1,
 					String.Format("ImageHelper DefaultEngine could not resize the image {0}. Details: {1}",
 						imgPath, ex.Message));

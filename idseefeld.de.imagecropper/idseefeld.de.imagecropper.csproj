@@ -87,6 +87,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="imagecropper\Config.cs" />
+    <Compile Include="imagecropper\NewPrevalueEditor.cs" />
     <Compile Include="imagecropper\Data.cs" />
     <Compile Include="imagecropper\DataEditor.cs" />
     <Compile Include="imagecropper\DataType.cs">

@@ -5,7 +5,6 @@ namespace idseefeld.de.imagecropper.imagecropper {
 	public class DataType : umbraco.cms.businesslogic.datatype.BaseDataType, umbraco.interfaces.IDataType {
 		public const string CROP_POSTFIX = "_HASHEDCROP";
 
-		private const bool USE_NEW_PREVALVUEEDITOR = false;
 		private umbraco.interfaces.IDataEditor _editor;
 		private umbraco.interfaces.IData _baseData;
 		private umbraco.interfaces.IDataPrevalue _prevalueEditor;
@@ -15,9 +14,7 @@ namespace idseefeld.de.imagecropper.imagecropper {
 			get
 			{
 				if (_editor == null)
-					_editor = USE_NEW_PREVALVUEEDITOR ?
-						new DataEditor(Data, ((NewPrevalueEditor)PrevalueEditor).Configuration)
-						: new DataEditor(Data, ((PrevalueEditor)PrevalueEditor).Configuration);
+					_editor = new DataEditor(Data, ((PrevalueEditor)PrevalueEditor).Configuration);
 				return _editor;
 			}
 		}
@@ -45,15 +42,8 @@ namespace idseefeld.de.imagecropper.imagecropper {
 		{
 			get
 			{
-				if (_prevalueEditor == null)
-					if (USE_NEW_PREVALVUEEDITOR)
-					{
-						_prevalueEditor = new NewPrevalueEditor(this);
-					}
-					else
-					{
-						_prevalueEditor = new PrevalueEditor(this);
-					}
+				if (_prevalueEditor == null) _prevalueEditor = new PrevalueEditor(this);
+
 				return _prevalueEditor;
 			}
 		}

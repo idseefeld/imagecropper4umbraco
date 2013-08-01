@@ -87,7 +87,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="imagecropper\Config.cs" />
-    <Compile Include="imagecropper\NewPrevalueEditor.cs" />
+    <Compile Include="imagecropper\ImageProvider\ImageProvider.cs" />
+    <Compile Include="imagecropper\PrevalueEditor.cs" />
     <Compile Include="imagecropper\Data.cs" />
     <Compile Include="imagecropper\DataEditor.cs" />
     <Compile Include="imagecropper\DataType.cs">
@@ -102,7 +103,6 @@
     <Compile Include="imagecropper\ImageTools.cs" />
     <Compile Include="imagecropper\Model\ImageCropperModel.cs" />
     <Compile Include="imagecropper\PersitenceFactory.cs" />
-    <Compile Include="imagecropper\PrevalueEditor.cs" />
     <Compile Include="imagecropper\SaveData.cs" />
     <Compile Include="imagecropper\SmartListBox.cs" />
     <Compile Include="imagecropper\UmbracoImage.cs" />

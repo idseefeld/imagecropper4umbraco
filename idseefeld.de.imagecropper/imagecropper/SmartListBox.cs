@@ -4,10 +4,56 @@ namespace idseefeld.de.imagecropper.imagecropper
 {
     public class SmartListBox : ListBox
     {
+		public void Update(ListItem item)
+		{
+			for (int i = 0; i < Items.Count; i++)
+			{
+				if (Items[i].Text == item.Text)
+				{
+					Items[i].Value = item.Value;
+					break;
+				}
+			}
+		}
+		public ListItem FindItem(string text)
+		{
+			ListItem item = null;
+			for (int i = 0; i < Items.Count; i++)
+			{
+				if (Items[i].Text.StartsWith(text +","))
+				{
+					item = Items[i];
+					break;
+				}
+			}
+			return item;
+		}
+		//Edit selected item
+		public ListItem GetSelectedItem()
+		{
+			ListItem item = null;
+			for (int i = 0; i < Items.Count; i++)
+			{
+				if (Items[i].Selected)
+				{
+					item = Items[i];
+					break;
+				}
+			}
+			return item;
+		}
+		public void RemoveSelected()
+		{
+			Items.Remove(GetSelectedItem());
+			//for (int i = slbPresets.Items.Count - 1; i >= 0; i--)
+			//{
+			//    if (slbPresets.Items[i].Selected)
+			//        slbPresets.Items.Remove(slbPresets.Items[i]);
+			//}
+		}
         //Moves the selected items up one level
         public void MoveUp()
         {
-
             for (int i = 0; i < Items.Count; i++)
             {
                 if (Items[i].Selected)//identify the selected item

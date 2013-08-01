@@ -8,6 +8,7 @@ using umbraco.interfaces;
 using System.Text;
 using umbraco.macroRenderings;
 using umbraco.editorControls;
+using System.Drawing;
 
 [assembly: WebResource("idseefeld.de.imagecropper.imagecropper.Resources.product-logo.png", "image/png")]
 namespace idseefeld.de.imagecropper.imagecropper {
@@ -41,9 +42,14 @@ namespace idseefeld.de.imagecropper.imagecropper {
 
 		private Button btnUp;
 		private Button btnDown;
-		private Button btnAdd;
+		private Button btnAddUpdate;
 		private Button btnRemove;
-		private Button btnGenerate;
+		private Button btnEdit;
+
+		private Button btnGenerateAll;
+		private Panel pnlProgress;
+		private Panel pnlProgressBar;
+		private Literal litProgressText;
 
 
 		public PrevalueEditor(umbraco.cms.businesslogic.datatype.BaseDataType dataType)
@@ -101,9 +107,35 @@ namespace idseefeld.de.imagecropper.imagecropper {
 
 			btnUp = new Button { ID = "up", Text = "Up", Width = Unit.Pixel(60) };
 			btnDown = new Button { ID = "down", Text = "Down", Width = Unit.Pixel(60) };
-			btnAdd = new Button { ID = "add", Text = "Add", Width = Unit.Pixel(60) };
+			btnAddUpdate = new Button { ID = "add", Text = "Add / Update", Width = Unit.Pixel(100) };
 			btnRemove = new Button { ID = "remove", Text = "Remove", Width = Unit.Pixel(60) };
-			btnGenerate = new Button { ID = "generate", Text = "Generate", Width = Unit.Pixel(60) };
+			btnEdit = new Button { ID = "edit", Text = "Edit", Width = Unit.Pixel(60) };
+
+			btnGenerateAll = new Button { ID = "generate", Text = "Generate all crops", Width = Unit.Pixel(120) };
+			pnlProgress = new Panel
+			{
+				ID = "progress",
+				Width = Unit.Pixel(300),
+				Height = Unit.Pixel(20),
+				BackColor = Color.FromArgb(255, 130, 130),
+				BorderWidth = Unit.Pixel(1),
+				Visible = false
+			};
+			pnlProgressBar = new Panel
+			{
+				ID = "progressBar",
+				Width = Unit.Pixel(3),
+				Height = Unit.Pixel(20),
+				BackColor = Color.FromArgb(0, 130, 0),
+			};
+			//litProgressText = new Literal
+			//{
+			//    ID = "progressText",
+			//    Text = "0 %"
+			//};
+			pnlProgress.Controls.Add(pnlProgressBar);
+			//pnlProgress.Controls.Add(litProgressText);
+
 
 			//Controls.Add(txtPropertyAlias);
 			Controls.Add(this.imagePropertyTypePicker);
@@ -130,18 +162,30 @@ namespace idseefeld.de.imagecropper.imagecropper {
 
 			Controls.Add(btnUp);
 			Controls.Add(btnDown);
-			Controls.Add(btnAdd);
+			Controls.Add(btnAddUpdate);
 			Controls.Add(btnRemove);
-			Controls.Add(btnGenerate);
+			Controls.Add(btnEdit);
+
+			Controls.Add(btnGenerateAll);
+			Controls.Add(pnlProgress);
 
 			btnUp.Click += _upButton_Click;
 			btnDown.Click += _downButton_Click;
-			btnAdd.Click += _addButton_Click;
+			btnAddUpdate.Click += _addButton_Click;
 			btnRemove.Click += _removeButton_Click;
+			btnEdit.Click += _editButton_Click;
+
+			btnGenerateAll.Click += _generateButton_Click;
 
 			chkGenerateCrops.CheckedChanged += _generateImagesCheckBox_CheckedChanged;
 
 
+		}
+		void _generateButton_Click(object sender, EventArgs e)
+		{
+			//TODO: implement crop generator with progress bar
+			//pnlProgress.Visible = true;
+			//pnlProgressBar.Width = Unit.Pixel(3 * 60);
 		}
 
 		void _generateImagesCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -162,36 +206,60 @@ namespace idseefeld.de.imagecropper.imagecropper {
 
 		void _removeButton_Click(object sender, EventArgs e)
 		{
-			for (int i = slbPresets.Items.Count - 1; i >= 0; i--)
+			slbPresets.RemoveSelected();
+		}
+
+		void _editButton_Click(object sender, EventArgs e)
+		{
+			ListItem item = slbPresets.GetSelectedItem();
+			if (item == null)
+				return;
+
+			string[] values = item.Value.Split(',');
+			if (values.Length < 3)
+				return;
+
+			txtCropName.Text = values[0];
+			txtTargetWidth.Text = values[1];
+			txtTargetHeight.Text = values[2];
+			if (values.Length > 3)
+				chkKeepAspect.Checked = values[3] == "1";
+			if (values.Length > 4)
 			{
-				if (slbPresets.Items[i].Selected)
-					slbPresets.Items.Remove(slbPresets.Items[i]);
+				ddlDefaultPosH.SelectedValue = values[4].Substring(0, 1);
+				ddlDefaultPosV.SelectedValue = values[4].Substring(1, 1);
 			}
 		}
 
 		void _addButton_Click(object sender, EventArgs e)
 		{
-			slbPresets.Items.Add(
-				new ListItem(
-					getListItemDisplayName(
+			string itemText = getListItemDisplayName(
 						txtCropName.Text,
 						txtTargetWidth.Text,
 						txtTargetHeight.Text,
 						chkKeepAspect.Checked ? "1" : "0",
-						String.Concat(ddlDefaultPosH.SelectedValue, ddlDefaultPosV.SelectedValue)),
-					String.Format("{0},{1},{2},{3},{4}",
+						String.Concat(ddlDefaultPosH.SelectedValue, ddlDefaultPosV.SelectedValue));
+			string newValue = String.Format("{0},{1},{2},{3},{4}",
 								  txtCropName.Text,
-								  String.IsNullOrEmpty(txtTargetWidth.Text) ? "0": txtTargetWidth.Text,
-								  String.IsNullOrEmpty(txtTargetHeight.Text) ? "0": txtTargetHeight.Text,
+								  String.IsNullOrEmpty(txtTargetWidth.Text) ? "0" : txtTargetWidth.Text,
+								  String.IsNullOrEmpty(txtTargetHeight.Text) ? "0" : txtTargetHeight.Text,
 								  chkKeepAspect.Checked ? "1" : "0",
-								  String.Concat(ddlDefaultPosH.SelectedValue, ddlDefaultPosV.SelectedValue))
-					)
-				);
+								  String.Concat(ddlDefaultPosH.SelectedValue, ddlDefaultPosV.SelectedValue));
+
+			ListItem item = slbPresets.FindItem(txtCropName.Text); // slbPresets.GetSelectedItem();//
+			if (item == null)
+			{
+				slbPresets.Items.Add(new ListItem(itemText, newValue));
+			}
+			else
+			{
+				item.Text = itemText;
+				item.Value = newValue;
+			}
 			txtCropName.Text = "";
 			txtTargetWidth.Text = "";
 			txtTargetHeight.Text = "";
 			chkKeepAspect.Checked = true;
-
 		}
 
 		public Control Editor
@@ -337,7 +405,11 @@ namespace idseefeld.de.imagecropper.imagecropper {
 			writer.Write("div.about{color:#006AB3;padding:10px;font-style:italic;}");
 			writer.Write("div.about a{color:#006AB3;}");
 			writer.Write("td.hintText{font-size:90%;color:#999;padding-bottom:10px;}");
+			writer.Write("#progress{margin-bottom:10px;}");
 			writer.Write("</style>");
+
+			//TODO: show progress of crop generation
+			//pnlProgress.RenderControl(writer);
 
 			if (!config.CustomProvider)
 			{
@@ -346,7 +418,7 @@ namespace idseefeld.de.imagecropper.imagecropper {
 			//writer.Write("<div style=\"float:left;overflow:hidden;\"><p><strong>General</strong></p></div>");
 			writer.Write(String.Format("<div style=\"float:left;overflow:hidden;width:100%;\"><a href='https://github.com/idseefeld/imagecropper4umbraco' target='_blank'><img src='{0}' align='right' /></a>{1}</div>",
 			Page.ClientScript.GetWebResourceUrl(
-				typeof(PrevalueEditor), 
+				typeof(PrevalueEditor),
 				"idseefeld.de.imagecropper.imagecropper.Resources.product-logo.png"),
 			config.CustomProvider ? "<div class=\"about\">Using ImageResizer as image render engine.<br /> For more information visit <a href=\"http://imageresizing.net\" target=\"_blank\">http://imageresizing.net</a>.</div>" : "")
 			);
@@ -409,7 +481,11 @@ namespace idseefeld.de.imagecropper.imagecropper {
 			chkKeepAspect.RenderControl(writer);
 			writer.Write("          </td></tr>");
 			writer.Write("      </table><br />");
-			btnAdd.RenderControl(writer);
+			btnAddUpdate.RenderControl(writer);
+			writer.Write("<br /><br />");
+
+			//TODO: id crop generator is implemented then show button
+			//btnGenerateAll.RenderControl(writer);
 
 			writer.Write("  </td><td valign=\"top\">&nbsp;&nbsp;");
 			slbPresets.RenderControl(writer);
@@ -417,7 +493,9 @@ namespace idseefeld.de.imagecropper.imagecropper {
 			btnUp.RenderControl(writer);
 			writer.Write("  <br />");
 			btnDown.RenderControl(writer);
-			writer.Write("  <br /><br /><br /><br /><br />");
+			writer.Write("  <br /><br /><br />");
+			btnEdit.RenderControl(writer);
+			writer.Write("  <br />");
 			btnRemove.RenderControl(writer);
 			writer.Write("  </td></tr>");
 			writer.Write("</table>");

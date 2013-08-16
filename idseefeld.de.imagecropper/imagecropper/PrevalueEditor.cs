@@ -260,6 +260,8 @@ namespace idseefeld.de.imagecropper.imagecropper {
 			txtTargetWidth.Text = "";
 			txtTargetHeight.Text = "";
 			chkKeepAspect.Checked = true;
+
+			Save();
 		}
 
 		public Control Editor

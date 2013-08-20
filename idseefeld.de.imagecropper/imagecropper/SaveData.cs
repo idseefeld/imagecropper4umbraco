@@ -92,14 +92,16 @@ namespace idseefeld.de.imagecropper.imagecropper
 					{
 						string cropHash = String.Format("{0}{1}",
 											umbraco.library.md5(
-												String.Format("{0}{1}{2}{3}{4}{5}{6}",
+												String.Format("{0}{1}{2}{3}{4}{5}{6}{7}{8}",
 													imageInfo.Name,
 													preset.Name,
 													crop.X.ToString(),
 													crop.Y.ToString(),
 													crop.X2.ToString(),
 													crop.Y2.ToString(),
-													config.IgnoreICC ? "T" : "F"
+													config.IgnoreICC ? "T" : "F",
+													preset.TargetWidth,
+													preset.TargetHeight
 												)
 											), DataType.CROP_POSTFIX);
 

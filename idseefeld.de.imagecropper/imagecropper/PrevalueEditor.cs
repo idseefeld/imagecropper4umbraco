@@ -267,13 +267,11 @@ namespace idseefeld.de.imagecropper.imagecropper {
 
 				Save();
 				//shoh saved bubble
-				//BasePage.Current.speechBubble(BasePage.speechBubbleIcon.save, "Datatype saved", "");
 				BasePage.Current.ClientTools.ShowSpeechBubble(BasePage.speechBubbleIcon.save, "Datatype saved", "");
 			}
 			else
 			{
 				//show error bubble
-				//BasePage.Current.speechBubble(BasePage.speechBubbleIcon.error, "Not added", "The values are not vaild.");
 				BasePage.Current.ClientTools.ShowSpeechBubble(BasePage.speechBubbleIcon.error, "Not added", "The values are not vaild.");
 			}
 

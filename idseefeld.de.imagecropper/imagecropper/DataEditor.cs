@@ -18,10 +18,8 @@ using umbraco.editorControls;
 [assembly: WebResource("idseefeld.de.imagecropper.imagecropper.Resources.jCropScript.js", "text/javascript")]
 [assembly: WebResource("idseefeld.de.imagecropper.imagecropper.Resources.jCropCSS.css", "text/css")]
 [assembly: WebResource("idseefeld.de.imagecropper.imagecropper.Resources.Jcrop.gif", "image/gif")]
-namespace idseefeld.de.imagecropper.imagecropper
-{
-	public class DataEditor : PlaceHolder, umbraco.interfaces.IDataEditor
-	{
+namespace idseefeld.de.imagecropper.imagecropper {
+	public class DataEditor : PlaceHolder, umbraco.interfaces.IDataEditor {
 		private readonly bool autoUpdateChangedWidth = false;
 
 		private umbraco.interfaces.IData data;
@@ -36,8 +34,8 @@ namespace idseefeld.de.imagecropper.imagecropper
 		protected Button cropperUpdateButton = new Button();
 		protected Label cropperUpdateLabel = new Label();
 
-		protected CheckBox chkIgnoreICC  = new CheckBox ();
-		protected Label labelIgnoreICC = new Label ();
+		protected CheckBox chkIgnoreICC = new CheckBox();
+		protected Label labelIgnoreICC = new Label();
 
 		protected Label CustomProviderHint = new Label();
 
@@ -74,7 +72,7 @@ namespace idseefeld.de.imagecropper.imagecropper
 			var uploadControl = PropertyHelper.FindControlRecursive<uploadField>(Page, String.Format("prop_{0}", this.config.UploadPropertyAlias));
 
 			if (uploadControl == null)
-			{	
+			{
 				//ToDo: get this message from /umbraco/config/lang *.xml
 				cropperUpdateLabel.Text = String.Format("Please check the UploadPropertyAlias for data type \"{0}\". No upload with alias \"{1}\" is available.<br />Make also sure the related upload field is sorted before this cropper.", GetDataTypeName(), this.config.UploadPropertyAlias);
 				cropperUpdateLabel.ForeColor = System.Drawing.Color.Red;
@@ -139,7 +137,7 @@ namespace idseefeld.de.imagecropper.imagecropper
 			chkIgnoreICC.Visible = config.ShowIgnoreICC;
 			chkIgnoreICC.ID = ClientID + "_chkIgnoreICC";
 			chkIgnoreICC.ClientIDMode = System.Web.UI.ClientIDMode.Static;
-			labelIgnoreICC.AssociatedControlID = ClientID + "_chkIgnoreICC"; 
+			labelIgnoreICC.AssociatedControlID = ClientID + "_chkIgnoreICC";
 			labelIgnoreICC.Visible = config.ShowIgnoreICC;
 			featurePanel.Controls.Add(chkIgnoreICC);
 			featurePanel.Controls.Add(labelIgnoreICC);
@@ -343,9 +341,46 @@ namespace idseefeld.de.imagecropper.imagecropper
 					int xml_x2 = Convert.ToInt32(xmlNode.Attributes["x2"].Value);
 					int xml_y2 = Convert.ToInt32(xmlNode.Attributes["y2"].Value);
 
-					DateTime fileDate = Convert.ToDateTime(xml.DocumentElement.Attributes["date"].Value);
+					int xml_width = -1;
+					int xml_height = -1;
+					if (xmlNode.Attributes["width"] != null)
+						int.TryParse(xmlNode.Attributes["width"].Value, out xml_width);
+					if (xmlNode.Attributes["height"] != null)
+						int.TryParse(xmlNode.Attributes["height"].Value, out xml_height);
 
-					if (crop.X != xml_x || crop.X2 != xml_x2 || crop.Y != xml_y || crop.Y2 != xml_y2)
+					DateTime fileDate = Convert.ToDateTime(xml.DocumentElement.Attributes["date"].Value);
+					if (xml_width < 0 || xml_height < 0)
+					{
+						//update from previous version or default cropper: use default
+					}else if (xml_width > 0 && xml_height > 0
+						&& preset.TargetHeight > 0
+						&& preset.TargetWidth > 0
+						&& (preset.TargetWidth != xml_width || preset.TargetHeight != xml_height))
+					{
+						float targetAR = (float)preset.TargetWidth / preset.TargetHeight;
+						float xml_AR = (float)xml_width / xml_height;
+						if (targetAR < xml_AR)
+						{
+							//target is more portrait like then stored value
+							crop.Y = xml_y;
+							crop.Y2 = xml_y2;
+							int newHeight = xml_y2 - xml_y;
+							int newWidth = (int)Math.Round(newHeight * targetAR);
+							crop.X = (xml_x2 - xml_x - newWidth) / 2 + xml_x;
+							crop.X2 = crop.X + newWidth;
+						}
+						else
+						{
+							//target is more landscape like then stored value
+							crop.X = xml_x;
+							crop.X2 = xml_x2;
+							int newWidth = xml_x2 - xml_x;
+							int newHeight = (int)Math.Round(newWidth / targetAR);
+							crop.Y = (xml_y2 - xml_y - newHeight) / 2 + xml_y;
+							crop.Y2 = crop.Y + newHeight;
+						}
+					}
+					else if (crop.X != xml_x || crop.X2 != xml_x2 || crop.Y != xml_y || crop.Y2 != xml_y2)
 					{
 						crop.X = xml_x;
 						crop.Y = xml_y;

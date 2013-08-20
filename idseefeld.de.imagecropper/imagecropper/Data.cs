@@ -52,7 +52,7 @@ namespace idseefeld.de.imagecropper.imagecropper {
 			}
 			else if (Aspect >= imageInfo.Aspect)
 			{
-				// crop widest            hor    ver
+				// crop widest
 				// relevant positioning: center top, center center, center bottom
 
 				float h = ((float)imageInfo.Width / TargetWidth) * TargetHeight;

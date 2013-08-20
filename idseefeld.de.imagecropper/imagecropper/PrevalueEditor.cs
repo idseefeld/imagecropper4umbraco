@@ -9,6 +9,7 @@ using System.Text;
 using umbraco.macroRenderings;
 using umbraco.editorControls;
 using System.Drawing;
+using umbraco.BasePages;
 
 [assembly: WebResource("idseefeld.de.imagecropper.imagecropper.Resources.product-logo.png", "image/png")]
 namespace idseefeld.de.imagecropper.imagecropper {
@@ -233,35 +234,49 @@ namespace idseefeld.de.imagecropper.imagecropper {
 
 		void _addButton_Click(object sender, EventArgs e)
 		{
-			string itemText = getListItemDisplayName(
-						txtCropName.Text,
-						txtTargetWidth.Text,
-						txtTargetHeight.Text,
-						chkKeepAspect.Checked ? "1" : "0",
-						String.Concat(ddlDefaultPosH.SelectedValue, ddlDefaultPosV.SelectedValue));
-			string newValue = String.Format("{0},{1},{2},{3},{4}",
-								  txtCropName.Text,
-								  String.IsNullOrEmpty(txtTargetWidth.Text) ? "0" : txtTargetWidth.Text,
-								  String.IsNullOrEmpty(txtTargetHeight.Text) ? "0" : txtTargetHeight.Text,
-								  chkKeepAspect.Checked ? "1" : "0",
-								  String.Concat(ddlDefaultPosH.SelectedValue, ddlDefaultPosV.SelectedValue));
-
-			ListItem item = slbPresets.FindItem(txtCropName.Text); // slbPresets.GetSelectedItem();//
-			if (item == null)
+			if (!String.IsNullOrEmpty(txtCropName.Text)
+				&& (!String.IsNullOrEmpty(txtTargetWidth.Text) || !String.IsNullOrEmpty(txtTargetHeight.Text)))
 			{
-				slbPresets.Items.Add(new ListItem(itemText, newValue));
+				string itemText = getListItemDisplayName(
+							txtCropName.Text,
+							txtTargetWidth.Text,
+							txtTargetHeight.Text,
+							chkKeepAspect.Checked ? "1" : "0",
+							String.Concat(ddlDefaultPosH.SelectedValue, ddlDefaultPosV.SelectedValue));
+				string newValue = String.Format("{0},{1},{2},{3},{4}",
+									  txtCropName.Text,
+									  String.IsNullOrEmpty(txtTargetWidth.Text) ? "0" : txtTargetWidth.Text,
+									  String.IsNullOrEmpty(txtTargetHeight.Text) ? "0" : txtTargetHeight.Text,
+									  chkKeepAspect.Checked ? "1" : "0",
+									  String.Concat(ddlDefaultPosH.SelectedValue, ddlDefaultPosV.SelectedValue));
+
+				ListItem item = slbPresets.FindItem(txtCropName.Text); // slbPresets.GetSelectedItem();//
+				if (item == null)
+				{
+					slbPresets.Items.Add(new ListItem(itemText, newValue));
+				}
+				else
+				{
+					item.Text = itemText;
+					item.Value = newValue;
+				}
+				txtCropName.Text = "";
+				txtTargetWidth.Text = "";
+				txtTargetHeight.Text = "";
+				chkKeepAspect.Checked = true;
+
+				Save();
+				//shoh saved bubble
+				//BasePage.Current.speechBubble(BasePage.speechBubbleIcon.save, "Datatype saved", "");
+				BasePage.Current.ClientTools.ShowSpeechBubble(BasePage.speechBubbleIcon.save, "Datatype saved", "");
 			}
 			else
 			{
-				item.Text = itemText;
-				item.Value = newValue;
+				//show error bubble
+				//BasePage.Current.speechBubble(BasePage.speechBubbleIcon.error, "Not added", "The values are not vaild.");
+				BasePage.Current.ClientTools.ShowSpeechBubble(BasePage.speechBubbleIcon.error, "Not added", "The values are not vaild.");
 			}
-			txtCropName.Text = "";
-			txtTargetWidth.Text = "";
-			txtTargetHeight.Text = "";
-			chkKeepAspect.Checked = true;
 
-			Save();
 		}
 
 		public Control Editor

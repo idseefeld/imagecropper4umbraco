@@ -12,8 +12,9 @@ namespace idseefeld.de.imagecropper.imagecropper
 
 		protected PersitenceFactory()
 		{
-			_fileSystem = FileSystemProviderManager.Current.GetUnderlyingFileSystemProvider("media");
 			//_fileSystem = FileSystemProviderManager.Current.GetFileSystemProvider<MediaFileSystem>();
+			//the above approche does not wor for the AST S3 package
+			_fileSystem = FileSystemProviderManager.Current.GetUnderlyingFileSystemProvider("media");
 		}
 
 		public string CopyToHashFile(string sourceFile, string name)

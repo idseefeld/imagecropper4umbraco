@@ -232,8 +232,9 @@ namespace idseefeld.de.imagecropper.imagecropper
 			string result = "";
 			if (!_fileSystem.FileExists(sourceFile)) return result;
 
-			string path = sourceFile.Substring(0, sourceFile.LastIndexOf('\\'));
+			//string path = sourceFile.Substring(0, sourceFile.LastIndexOf('\\'));
 			string relPath = _fileSystem.GetRelativePath(sourceFile);
+			string path = relPath.Contains("\\") ? relPath.Substring(0, relPath.LastIndexOf('\\')) : relPath;
 
 			string ext = ImageTransform.GetAdjustedFileExtension(sourceFile);
 			string newPath = String.Format("{0}\\{1}.{2}", path, name, ext);

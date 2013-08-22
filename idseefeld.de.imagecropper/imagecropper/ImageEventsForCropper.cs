@@ -96,7 +96,9 @@ namespace idseefeld.de.imagecropper.imagecropper
 				foreach (var dir in mediaItemDirectories)
 				{
 					string mappedDirPath = IOHelper.MapPath(dir);
-					MediaFileSystem _fileSystem = FileSystemProviderManager.Current.GetFileSystemProvider<MediaFileSystem>();
+					//MediaFileSystem _fileSystem = FileSystemProviderManager.Current.GetFileSystemProvider<MediaFileSystem>();
+					//the above approche does not wor for the AST S3 package
+					IFileSystem _fileSystem = FileSystemProviderManager.Current.GetUnderlyingFileSystemProvider("media");
 					foreach (var file in _fileSystem.GetFiles(mappedDirPath))
 					{
 						if (file.Substring(0, file.LastIndexOf('.')).EndsWith(DataType.CROP_POSTFIX))

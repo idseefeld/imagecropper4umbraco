@@ -22,7 +22,7 @@ namespace idseefeld.de.imagecropper.imagecropper {
 	public class DataEditor : PlaceHolder, umbraco.interfaces.IDataEditor {
 		private readonly bool autoUpdateChangedWidth = false;
 
-		private umbraco.interfaces.IData data;
+		private readonly umbraco.cms.businesslogic.datatype.FileHandlerData data;//umbraco.interfaces.IData data;
 		private Config config;
 		private XmlDocument _xml;
 		private bool ParentIsDocument;
@@ -46,7 +46,7 @@ namespace idseefeld.de.imagecropper.imagecropper {
 
 		public DataEditor(umbraco.interfaces.IData Data, string Configuration)
 		{
-			data = Data;
+			data = (umbraco.cms.businesslogic.datatype.FileHandlerData) Data;
 			config = new Config(Configuration);
 		}
 

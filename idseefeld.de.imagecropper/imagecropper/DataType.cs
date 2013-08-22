@@ -24,7 +24,7 @@ namespace idseefeld.de.imagecropper.imagecropper {
 			get
 			{
 				if (_baseData == null)
-					_baseData = new DataTypeData(this);
+					_baseData = new umbraco.cms.businesslogic.datatype.FileHandlerData(this, ((PrevalueEditor)PrevalueEditor).Configuration); //DataTypeData(this);
 				return _baseData;
 			}
 		}

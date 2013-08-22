@@ -227,12 +227,14 @@ namespace idseefeld.de.imagecropper.imagecropper
 			}
 			return adjustedPath;
 		}
-		public static string Execute(string sourceFile, string name, int cropX, int cropY, int cropWidth, int cropHeight, int sizeWidth, int sizeHeight, Config config, MediaFileSystem _fileSystem)
+		public static string Execute(string sourceFile, string name, int cropX, int cropY, int cropWidth, int cropHeight, int sizeWidth, int sizeHeight, Config config, IFileSystem _fileSystem)
 		{
 			string result = "";
 			if (!_fileSystem.FileExists(sourceFile)) return result;
 
 			string path = sourceFile.Substring(0, sourceFile.LastIndexOf('\\'));
+			string relPath = _fileSystem.GetRelativePath(sourceFile);
+
 			string ext = ImageTransform.GetAdjustedFileExtension(sourceFile);
 			string newPath = String.Format("{0}\\{1}.{2}", path, name, ext);
 			bool forceResize = true;//must, but can not remeber why - TODO: check this

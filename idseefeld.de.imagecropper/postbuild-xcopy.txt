@@ -1,0 +1,7 @@
+﻿you may adjust the paths and copy the following lines to project properties into section build events -> post build events:
+xcopy "$(ProjectDir)bin\idseefeld.de.imagecropper.*" "C:\inetpub\wwwroot\umb6.1.x\www\bin" /Y
+xcopy "$(ProjectDir)bin\ImageResizer.*" "C:\inetpub\wwwroot\umb6.1.x\www\bin" /Y
+xcopy "$(ProjectDir)bin\idseefeld.de.imagecropper.*" "C:\inetpub\wwwroot\umb6.1.x\www4\bin" /Y
+xcopy "$(ProjectDir)bin\ImageResizer.*" "C:\inetpub\wwwroot\umb6.1.x\www4\bin" /Y
+xcopy "$(ProjectDir)bin\idseefeld.de.imagecropper.*" "C:\inetpub\wwwroot\umb6.1.x\aws_s3\bin" /Y
+xcopy "$(ProjectDir)bin\ImageResizer.*" "C:\inetpub\wwwroot\umb6.1.x\aws_s3\bin" /Y

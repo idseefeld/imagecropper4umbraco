@@ -74,7 +74,8 @@ namespace idseefeld.de.imagecropper.Model {
 				Crops = new List<CropModel>();
 				foreach (XmlNode node in nodes)
 				{
-					Crops.Add(new CropModel(node));
+					CropModel crop = new CropModel(node);
+					Crops.Add(crop);
 				}
 			}
 		}

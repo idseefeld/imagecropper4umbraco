@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{675C9A37-D36B-4781-A9D6-449E8F043055}</ProjectGuid>
+    <ProjectGuid>{B4F2FD07-E5BA-4D3A-9FD8-74BAE33F6276}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>idseefeld.de.imagecropper</RootNamespace>
-    <AssemblyName>idseefeld.de.imagecropper</AssemblyName>
+    <RootNamespace>idseefeld.de.imagecropper.pevc</RootNamespace>
+    <AssemblyName>idseefeld.de.imagecropper.pevc</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -21,7 +21,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -44,17 +43,11 @@
     <Reference Include="controls">
       <HintPath>..\externals\controls.dll</HintPath>
     </Reference>
-    <Reference Include="ImageResizer">
-      <HintPath>..\packages\ImageResizer.3.3.3\lib\ImageResizer.dll</HintPath>
-    </Reference>
     <Reference Include="interfaces">
       <HintPath>..\externals\interfaces.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -86,57 +79,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="imagecropper\Config.cs" />
-    <Compile Include="imagecropper\ImageCropperBase.cs" />
-    <Compile Include="imagecropper\ImageProvider\ImageProvider.cs" />
-    <Compile Include="imagecropper\PrevalueEditor.cs" />
-    <Compile Include="imagecropper\Data.cs" />
-    <Compile Include="imagecropper\DataEditor.cs" />
-    <Compile Include="imagecropper\DataType.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="imagecropper\DataTypeData.cs" />
-    <Compile Include="imagecropper\Helper.cs" />
-    <Compile Include="imagecropper\IImageResizeEngine.cs" />
-    <Compile Include="imagecropper\ImageEventsForCropper.cs" />
-    <Compile Include="imagecropper\ImageInfo.cs" />
-    <Compile Include="imagecropper\ImageResizeEngineDefault.cs" />
-    <Compile Include="imagecropper\ImageTools.cs" />
-    <Compile Include="imagecropper\Model\ImageCropperModel.cs" />
-    <Compile Include="imagecropper\PersitenceFactory.cs" />
-    <Compile Include="imagecropper\SaveData.cs" />
-    <Compile Include="imagecropper\SmartListBox.cs" />
-    <Compile Include="imagecropper\UmbracoImage.cs" />
-    <Compile Include="imagecropper\ImageResizerProvider\ImageEngineImageResizer.cs" />
-    <Compile Include="imagecropper\ImageResizerProvider\ImageResizerFeatures.cs" />
+    <Compile Include="ImageCropperExtendedPropertyEditorValueConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PropertyHelper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="imagecropper\Resources\imageCropperScript.js" />
-    <EmbeddedResource Include="imagecropper\Resources\Jcrop.gif" />
-    <EmbeddedResource Include="imagecropper\Resources\jCropCSS.css" />
-    <EmbeddedResource Include="imagecropper\Resources\jCropScript.js" />
-    <EmbeddedResource Include="imagecropper\Resources\json2.js" />
+    <ProjectReference Include="..\idseefeld.de.imagecropper\idseefeld.de.imagecropper.csproj">
+      <Project>{675C9A37-D36B-4781-A9D6-449E8F043055}</Project>
+      <Name>idseefeld.de.imagecropper</Name>
+    </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="imagecropper\Resources\product-logo.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="postbuild-xcopy.txt" />
-  </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(ProjectDir)bin\idseefeld.de.imagecropper.*" "C:\inetpub\wwwroot\umb6.1.x\www\bin" /Y
-xcopy "$(ProjectDir)bin\ImageResizer.*" "C:\inetpub\wwwroot\umb6.1.x\www\bin" /Y
-xcopy "$(ProjectDir)bin\idseefeld.de.imagecropper.*" "C:\inetpub\wwwroot\umb6.1.x\www4\bin" /Y
-xcopy "$(ProjectDir)bin\ImageResizer.*" "C:\inetpub\wwwroot\umb6.1.x\www4\bin" /Y
-xcopy "$(ProjectDir)bin\idseefeld.de.imagecropper.*" "C:\inetpub\wwwroot\umb6.1.x\aws_s3\bin" /Y
-xcopy "$(ProjectDir)bin\ImageResizer.*" "C:\inetpub\wwwroot\umb6.1.x\aws_s3\bin" /Y</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(ProjectDir)bin\idseefeld.de.imagecropper.pevc.*" "C:\inetpub\wwwroot\umb6.1.x\www\bin" /Y</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -42,9 +42,16 @@ namespace idseefeld.de.imagecropper.Model {
 		/// <param name="crop">crop xml</param>
 		public CropModel(XmlNode crop)
 		{
+			if (crop.Attributes["url"] == null || crop.Attributes["newurl"] == null)
+			{
+				NewUrl = Url = String.Empty;
+			}
+			else
+			{
+				NewUrl = crop.Attributes["newurl"].Value;
+				Url = crop.Attributes["url"].Value;
+			}
 			Name = crop.Attributes["name"].Value;
-			NewUrl = crop.Attributes["newurl"].Value;
-			Url = crop.Attributes["url"].Value;
 			Width = NumericAttribute(crop, "width");
 			Height = NumericAttribute(crop, "height");
 			Crop = new Crop(

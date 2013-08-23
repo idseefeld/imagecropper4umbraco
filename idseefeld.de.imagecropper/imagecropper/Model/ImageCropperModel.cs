@@ -8,15 +8,38 @@ using System.Xml.XPath;
 using idseefeld.de.imagecropper.imagecropper;
 
 namespace idseefeld.de.imagecropper.Model {
-
+	/// <summary>
+	/// Model for a certain Image Cropper Extended defined crop.
+	/// </summary>
 	public class CropModel {
+		/// <summary>
+		/// Width of crop image.
+		/// </summary>
 		public int Width { get; private set; }
+		/// <summary>
+		/// Height of crop image.
+		/// </summary>
 		public int Height { get; private set; }
+		/// <summary>
+		/// Coordinates of crop area base on the original image.
+		/// </summary>
 		public Crop Crop { get; private set; }
+		/// <summary>
+		/// Crop Image url with hashed name for preview function on content docuemnt types.
+		/// </summary>
 		public string NewUrl { get; private set; }
+		/// <summary>
+		/// Url of crop image.
+		/// </summary>
 		public string Url { get; private set; }
+		/// <summary>
+		/// Name of the crop definition.
+		/// </summary>
 		public string Name { get; private set; }
-
+		/// <summary>
+		/// Model for a certain Image Cropper Extended defined crop.
+		/// </summary>
+		/// <param name="crop">crop xml</param>
 		public CropModel(XmlNode crop)
 		{
 			Name = crop.Attributes["name"].Value;
@@ -38,12 +61,23 @@ namespace idseefeld.de.imagecropper.Model {
 			return rVal;
 		}
 	}
-
+	/// <summary>
+	/// This is model for an Image Cropper Extended property editor value.
+	/// The Crops property of this model is of type a List&lt;CropModel&gt;.
+	/// The Find(cropName) method selects a certain crop by name.
+	/// </summary>
 	public class ImageCropperModel {
 		XmlDocument _data = new XmlDocument();
-
+		/// <summary>
+		/// List of CropModel types (all defined crops of certain property editor).
+		/// </summary>
 		public List<CropModel> Crops { get; private set; }
 
+		/// <summary>
+		/// Model for Image Cropper Extended property editor value. If you specify a cropperName the model will chached for the current request. 
+		/// </summary>
+		/// <param name="propertyValue">The property value (Xml).</param>
+		/// <param name="cropperName">[optional] if provided, this will be used as cache key for request scope.</param>
 		public ImageCropperModel(string propertyValue, string cropperName = "")
 		{
 			if (String.IsNullOrEmpty(cropperName))
@@ -63,7 +97,15 @@ namespace idseefeld.de.imagecropper.Model {
 				HttpContext.Current.Items[cropperName] = Crops;
 			}
 		}
-
+		/// <summary>
+		/// Finds a certain crop by its name.
+		/// </summary>
+		/// <param name="name">Name of a certain crop</param>
+		/// <returns>CropModel</returns>
+		public CropModel Find(string name)
+		{
+			return this.Crops.Where(n => n.Name.Equals(name)).FirstOrDefault();
+		}
 
 		private void Initialise(string propertyValue)
 		{
@@ -78,12 +120,6 @@ namespace idseefeld.de.imagecropper.Model {
 					Crops.Add(crop);
 				}
 			}
-		}
-	}
-	public static class ImageCropperModelExtentions {
-		public static CropModel Find(this ImageCropperModel model, string name)
-		{
-			return model.Crops.Where(n => n.Name.Equals(name)).FirstOrDefault();
 		}
 	}
 }

@@ -227,12 +227,11 @@ namespace idseefeld.de.imagecropper.imagecropper
 			}
 			return adjustedPath;
 		}
-		public static string Execute(string sourceFile, string name, int cropX, int cropY, int cropWidth, int cropHeight, int sizeWidth, int sizeHeight, Config config, IFileSystem _fileSystem)
+		public static string Execute(string sourceFile, string name, int cropX, int cropY, int cropWidth, int cropHeight, int sizeWidth, int sizeHeight, Config config, MediaFileSystem _fileSystem)
 		{
 			string result = "";
 			if (!_fileSystem.FileExists(sourceFile)) return result;
 
-			//string path = sourceFile.Substring(0, sourceFile.LastIndexOf('\\'));
 			string relPath = _fileSystem.GetRelativePath(sourceFile);
 			string path = relPath.Contains("\\") ? relPath.Substring(0, relPath.LastIndexOf('\\')) : relPath;
 

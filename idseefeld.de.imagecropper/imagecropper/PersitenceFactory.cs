@@ -8,13 +8,11 @@ namespace idseefeld.de.imagecropper.imagecropper
 {
 	public class PersitenceFactory
 	{
-		internal readonly IFileSystem _fileSystem;
+		internal readonly MediaFileSystem _fileSystem;
 
 		protected PersitenceFactory()
 		{
-			//_fileSystem = FileSystemProviderManager.Current.GetFileSystemProvider<MediaFileSystem>();
-			//the above approche does not wor for the AST S3 package
-			_fileSystem = FileSystemProviderManager.Current.GetUnderlyingFileSystemProvider("media");
+			_fileSystem = FileSystemProviderManager.Current.GetFileSystemProvider<MediaFileSystem>();
 		}
 
 		public string CopyToHashFile(string sourceFile, string name)

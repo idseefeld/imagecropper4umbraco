@@ -15,10 +15,8 @@ using umbraco.cms.businesslogic.property;
 using umbraco.presentation;
 using Umbraco.Core.IO;
 
-namespace idseefeld.de.imagecropper.imagecropper
-{
-	public class ImageEventsForCropper : ApplicationStartupHandler
-	{
+namespace idseefeld.de.imagecropper.imagecropper {
+	public class ImageEventsForCropper : ApplicationStartupHandler {
 		//ToDo: make contentType with croppers configurable
 
 		public ImageEventsForCropper()
@@ -96,25 +94,24 @@ namespace idseefeld.de.imagecropper.imagecropper
 				foreach (var dir in mediaItemDirectories)
 				{
 					string mappedDirPath = IOHelper.MapPath(dir);
-					//MediaFileSystem _fileSystem = FileSystemProviderManager.Current.GetFileSystemProvider<MediaFileSystem>();
-					//the above approche does not wor for the AST S3 package
-					IFileSystem _fileSystem = FileSystemProviderManager.Current.GetUnderlyingFileSystemProvider("media");
+					MediaFileSystem _fileSystem = FileSystemProviderManager.Current.GetFileSystemProvider<MediaFileSystem>();
 					foreach (var file in _fileSystem.GetFiles(mappedDirPath))
 					{
 						if (file.Substring(0, file.LastIndexOf('.')).EndsWith(DataType.CROP_POSTFIX))
 						{
-							string delFilePath = mappedDirPath + file.Substring(file.LastIndexOf('\\'));
 							bool deleteFile = true;
 							foreach (var activeFile in activeFiles)
 							{
-								if (delFilePath.EndsWith(activeFile))
+								if (file.EndsWith(activeFile))
 								{
 									deleteFile = false;
 									break;
 								}
 							}
 							if (deleteFile)
-								_fileSystem.DeleteFile(delFilePath);
+							{
+								_fileSystem.DeleteFile(file);
+							}
 						}
 
 					}
@@ -139,7 +136,7 @@ namespace idseefeld.de.imagecropper.imagecropper
 				{
 					var prevalues = prop.PropertyType.DataTypeDefinition.DataType.PrevalueEditor;
 
-					Config config = new Config(((PrevalueEditor)prevalues).Configuration);					
+					Config config = new Config(((PrevalueEditor)prevalues).Configuration);
 
 					var uploadFieldProp = properties.Where(p => p.PropertyType.DataTypeDefinition.DataType.Id.Equals(uploadFieldDt.Id)
 						&& p.PropertyType.Alias.Equals(config.UploadPropertyAlias)).FirstOrDefault();
@@ -174,20 +171,24 @@ namespace idseefeld.de.imagecropper.imagecropper
 						{
 							Preset preset = (Preset)presetConfig;
 							Crop crop;
-							if (imageInfo.Exists) {
+							if (imageInfo.Exists)
+							{
 								crop = preset.Fit(imageInfo);
 							}
-							else {
+							else
+							{
 								crop.X = 0;
 								crop.Y = 0;
 								crop.X2 = preset.TargetWidth;
 								crop.Y2 = preset.TargetHeight;
 							}
 							sbRaw.Append(String.Format("{0},{1},{2},{3}", crop.X, crop.Y, crop.X2, crop.Y2));
-							if (cropIndex < presets.Count) {
+							if (cropIndex < presets.Count)
+							{
 								sbRaw.Append(";");
 							}
-							if (config.GenerateImages) {
+							if (config.GenerateImages)
+							{
 								GenerateCrop(
 									preset,
 									imgUrl,

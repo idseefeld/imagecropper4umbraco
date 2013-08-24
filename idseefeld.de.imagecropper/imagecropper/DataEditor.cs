@@ -414,7 +414,7 @@ namespace idseefeld.de.imagecropper.imagecropper {
 				imgImage.ImageUrl = fixedUrl;
 				UpdateCropper(imgImage.ImageUrl);
 			}
-			ImageInfo imageInfo = new ImageInfo(imgImage.ImageUrl, config, ParentIsDocument);
+			ImageInfo imageInfo = new ImageInfo(imgImage.ImageUrl, config, ParentIsDocument, this.data);
 			if (!imageInfo.Exists)
 			{
 				data.Value = "";

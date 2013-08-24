@@ -6,12 +6,12 @@ using umbraco.cms.businesslogic.media;
 using umbraco.Utils;
 using Umbraco.Core.Media;
 using umbraco.BusinessLogic;
+using System.Xml;
+using idseefeld.de.imagecropper.Model;
 
 
-namespace idseefeld.de.imagecropper.imagecropper
-{
-	public class ImageInfo : PersitenceFactory
-	{
+namespace idseefeld.de.imagecropper.imagecropper {
+	public class ImageInfo : PersitenceFactory {
 		public Image image { get; set; }
 		public string Name { get; set; }
 		public int Width { get; set; }
@@ -25,7 +25,9 @@ namespace idseefeld.de.imagecropper.imagecropper
 		private bool ParentIsDocument = false;
 		private bool isCropBase = false;
 
-		public ImageInfo(string relativeFilePath, Config config, bool ParentIsDocument)
+		private bool deleteCropsOnRemoveImage = true;
+
+		public ImageInfo(string relativeFilePath, Config config, bool ParentIsDocument, umbraco.cms.businesslogic.datatype.FileHandlerData data = null)
 		{
 			this._config = config;
 			this.ParentIsDocument = ParentIsDocument;
@@ -33,9 +35,10 @@ namespace idseefeld.de.imagecropper.imagecropper
 			string relPath = RelativePath.Substring(0, RelativePath.LastIndexOf('/') + 1);
 
 			Path = IOHelper.MapPath(relativeFilePath);
-			
+
 			if (_fileSystem.FileExists(Path))
 			{
+				#region original image exists
 				string fileName = Path.Substring(Path.LastIndexOf('\\') + 1);
 				Name = fileName.Substring(0, fileName.LastIndexOf('.'));
 				using (System.IO.Stream _stream = _fileSystem.OpenFile(Path))
@@ -86,9 +89,73 @@ namespace idseefeld.de.imagecropper.imagecropper
 						Aspect = 0;
 					}
 				}
+				#endregion
 			}
 			else
 			{
+				if (deleteCropsOnRemoveImage)
+				{
+					#region deleteCropsOnRemoveImage
+					if (data != null && data.Value != null && !String.IsNullOrEmpty(data.Value.ToString()))
+					{
+						//if crops exist then delete them now
+						ImageCropperModel cropperModel = new ImageCropperModel(data.Value.ToString());
+						string mediaDirPath = null;
+						foreach (var crop in cropperModel.Crops)
+						{
+							if (mediaDirPath == null)
+							{
+								mediaDirPath = _fileSystem.GetRelativePath(crop.Url);
+								mediaDirPath = mediaDirPath.Contains("\\")
+									? mediaDirPath.Substring(0, mediaDirPath.LastIndexOf('\\'))
+									: mediaDirPath;
+							}
+							var files = _fileSystem.GetFiles(mediaDirPath);
+							foreach (var f in files)
+							{
+								if (f.Contains(String.Format("_{0}.", crop.Name)))
+								{
+									_fileSystem.DeleteFile(f);
+								}
+								else if (f.Contains(DataType.CROP_POSTFIX))
+								{
+									_fileSystem.DeleteFile(f);
+								}
+							}
+						}
+						if (!String.IsNullOrEmpty(mediaDirPath) && _fileSystem.DirectoryExists(mediaDirPath))
+						{
+							bool dirIsEmpty = true;
+							var dirs = _fileSystem.GetDirectories(mediaDirPath);
+							foreach (var d in dirs)
+							{
+								if (!String.IsNullOrEmpty(d))
+								{
+									dirIsEmpty = false;
+									break;
+								}
+							}
+							if (dirIsEmpty)
+							{
+								var files = _fileSystem.GetFiles(mediaDirPath);
+								foreach (var f in files)
+								{
+									if (!String.IsNullOrEmpty(f))
+									{
+										dirIsEmpty = false;
+										break;
+									}
+								}
+							}
+							if (dirIsEmpty)
+							{
+								//if dir is empty then delete dir too
+								_fileSystem.DeleteDirectory(mediaDirPath);
+							}
+						}
+					}
+					#endregion
+				}
 				Width = 0;
 				Height = 0;
 				Aspect = 0;
@@ -200,8 +267,7 @@ namespace idseefeld.de.imagecropper.imagecropper
 		}
 	}
 
-	public class ImageTransform
-	{
+	public class ImageTransform {
 		public static string GetAdjustedFileExtension(string filename)
 		{
 			string extension = filename.Substring(filename.LastIndexOf('.') + 1);
@@ -222,7 +288,7 @@ namespace idseefeld.de.imagecropper.imagecropper
 					extension);
 				string sourceFile = IOHelper.MapPath(relativeImagePath);
 				string newFile = IOHelper.MapPath(adjustedPath);
-				
+
 				ResizeEngine.saveNewImageSize(sourceFile, extension, newFile, true);
 			}
 			return adjustedPath;
@@ -274,6 +340,6 @@ namespace idseefeld.de.imagecropper.imagecropper
 			return result;
 		}
 
-		
+
 	}
 }

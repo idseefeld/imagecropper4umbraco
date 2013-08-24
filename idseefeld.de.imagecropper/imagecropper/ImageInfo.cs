@@ -25,7 +25,7 @@ namespace idseefeld.de.imagecropper.imagecropper {
 		private bool ParentIsDocument = false;
 		private bool isCropBase = false;
 
-		private bool deleteCropsOnRemoveImage = true;
+		private bool deleteCropsOnRemoveImage = false;//new delete on upload image remove disabled
 
 		public ImageInfo(string relativeFilePath, Config config, bool ParentIsDocument, umbraco.cms.businesslogic.datatype.FileHandlerData data = null)
 		{

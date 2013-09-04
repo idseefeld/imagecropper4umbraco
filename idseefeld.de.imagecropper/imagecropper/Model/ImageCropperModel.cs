@@ -6,6 +6,7 @@ using System.Web;
 using System.Xml;
 using System.Xml.XPath;
 using idseefeld.de.imagecropper.imagecropper;
+using umbraco.BusinessLogic;
 
 namespace idseefeld.de.imagecropper.Model {
 	/// <summary>
@@ -111,21 +112,41 @@ namespace idseefeld.de.imagecropper.Model {
 		/// <returns>CropModel</returns>
 		public CropModel Find(string name)
 		{
-			return this.Crops.Where(n => n.Name.Equals(name)).FirstOrDefault();
+			if (this.Crops != null)
+				return this.Crops.Where(n => n.Name.Equals(name)).FirstOrDefault();
+			else
+				return null;
 		}
 
 		private void Initialise(string propertyValue)
 		{
-			_data.LoadXml(propertyValue);
-			XmlNodeList nodes = _data.DocumentElement.SelectNodes("crop");
-			if (nodes.Count > 0)
+			try
 			{
-				Crops = new List<CropModel>();
-				foreach (XmlNode node in nodes)
+				_data.LoadXml(propertyValue);
+
+				XmlNodeList nodes = _data.DocumentElement.SelectNodes("crop");
+				if (nodes.Count > 0)
 				{
-					CropModel crop = new CropModel(node);
-					Crops.Add(crop);
+					Crops = new List<CropModel>();
+					foreach (XmlNode node in nodes)
+					{
+						CropModel crop = new CropModel(node);
+						Crops.Add(crop);
+					}
 				}
+			}
+			catch (Exception ex)
+			{
+				//for version 6.x only
+				//Umbraco.Core.Logging.LogHelper.Error<ImageCropperModel>(
+				//    String.Format("ImageCropperModel could be initialisied from property value. Exception message: {0}",
+				//        ex.Message), 
+				//        ex);
+
+				//for version 4.11.x and higher
+				Log.Add(LogTypes.Error, -1,
+					String.Format("ImageCropperModel could be initialisied from property value. Exception message: {0}",
+						ex.Message));
 			}
 		}
 	}

@@ -1,0 +1,15 @@
+﻿{   
+    propertyEditors: [      
+        {
+            id: "DD85D7AA-32BB-4EFB-86C6-B44ED840645B",
+            name: "Image Cropper Extended",
+            editor: {
+                view: "~/App_Plugins/ImageCropperExtended/imagecropperextended.html"
+            }
+        }
+    ]
+    ,
+    javascript: [
+        '~/App_Plugins/ImageCropperExtended/imagecropperextended.controller.js'		
+    ]
+}

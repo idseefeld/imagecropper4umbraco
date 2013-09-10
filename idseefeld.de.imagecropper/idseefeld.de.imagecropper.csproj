@@ -124,9 +124,18 @@
     <EmbeddedResource Include="imagecropper\Resources\product-logo.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App_Plugins\ImageCropperExtended\package.manifest" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Plugins\ImageCropperExtended\imagecropperextended.controller.js" />
+    <Content Include="App_Plugins\ImageCropperExtended\imagecropperextended.html" />
+    <EmbeddedResource Include="App_Plugins\ImageCropperExtended\lib\imageCropperScript.js" />
+    <EmbeddedResource Include="App_Plugins\ImageCropperExtended\lib\Jcrop.gif" />
+    <EmbeddedResource Include="App_Plugins\ImageCropperExtended\lib\jCropCSS.css" />
+    <EmbeddedResource Include="App_Plugins\ImageCropperExtended\lib\jCropScript.js" />
+    <EmbeddedResource Include="App_Plugins\ImageCropperExtended\lib\json2.js" />
+    <EmbeddedResource Include="App_Plugins\ImageCropperExtended\lib\product-logo.png" />
     <Content Include="postbuild-xcopy.txt" />
   </ItemGroup>
   <ItemGroup />

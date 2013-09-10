@@ -5,6 +5,8 @@ using Umbraco.Core.PropertyEditors;
 using Umbraco.Web;
 using idseefeld.de.imagecropper.Model;
 using idseefeld.de.imagecropper.imagecropper;
+using System.Text;
+using System.Xml;
 
 namespace idseefeld.de.imagecropper.PropertyEditorValueConverter {
 	public class ImageCropperExtendedPropertyEditorValueConverter : IPropertyEditorValueConverter {
@@ -31,7 +33,7 @@ namespace idseefeld.de.imagecropper.PropertyEditorValueConverter {
 				try
 				{
 					ImageCropperModel imageCropperExtendedContent = new ImageCropperModel(value.ToString());
-					CropList result = new CropList(imageCropperExtendedContent);
+					CropList result = new CropList(imageCropperExtendedContent, value.ToString());
 					return new Attempt<object>(true, result);
 				}
 				catch { }
@@ -39,15 +41,22 @@ namespace idseefeld.de.imagecropper.PropertyEditorValueConverter {
 			return Attempt<object>.False;
 		}
 	}
+	/// <summary>
+	/// Image Cropper Model
+	/// </summary>
 	public class CropList : List<CropModel> {
-		/// <summary>
-		/// List of all crops as definded in the data type.
-		/// </summary>
-		/// <param name="model">ImageCropperModel (strongly typed model fro Image Cropper Extended data types aka property editor)</param>
-		public CropList(ImageCropperModel model)
+		private string PropertyValue { get; set; }
+ 		/// <summary>
+ 		/// List of all crops as definded in the data type.
+ 		/// </summary>
+ 		/// <param name="model">ImageCropperModel (strongly typed model fro Image Cropper Extended data types aka property editor)</param>
+ 		/// <param name="propertyValue">original property value for legacy support</param>
+		public CropList(ImageCropperModel model, string propertyValue)
 		{
 			if (model == null)
 				return;
+
+			this.PropertyValue = propertyValue;
 
 			foreach (var crop in model.Crops)
 			{
@@ -63,5 +72,14 @@ namespace idseefeld.de.imagecropper.PropertyEditorValueConverter {
 		{
 			return this.Find(c => c.Name.Equals(cropName));
 		}
+		/// <summary>
+		/// Return the original property value for backward compatibility
+		/// </summary>
+		/// <returns>original property value as string</returns>
+		public override string ToString()
+		{
+			return this.PropertyValue;
+		}
+
 	}
 }

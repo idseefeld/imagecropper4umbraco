@@ -145,7 +145,7 @@ namespace idseefeld.de.imagecropper.Model {
 
 				//for version 4.11.x and higher
 				Log.Add(LogTypes.Error, -1,
-					String.Format("ImageCropperModel could be initialisied from property value. Exception message: {0}",
+					String.Format("ImageCropperModel could not be initialisied from property value. Exception message: {0}",
 						ex.Message));
 			}
 		}

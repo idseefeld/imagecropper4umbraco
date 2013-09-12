@@ -40,13 +40,13 @@
 		if (typeof (opt) !== 'object') opt = {};
 
 		// Some on-the-fly fixes for MSIE...sigh
-		if (!('trackDocument' in opt)) {
+		if (!('trackDocument' in opt) && $.browser) {
 			opt.trackDocument = $.browser.msie ? false : true;
 			if ($.browser.msie && $.browser.version.split('.')[0] == '8')
 				opt.trackDocument = true;
 		}
 
-		if (!('keySupport' in opt))
+		if (!('keySupport' in opt) && $.browser)
 			opt.keySupport = $.browser.msie ? false : true;
 
 		// Extend the default options
@@ -384,7 +384,7 @@
 			if (options.drawBorders) {
 				borders = {
 					top: insertBorder('hline')
-						.css('top', $.browser.msie ? px(-1) : px(0)),
+						.css('top', px(0)),
 					bottom: insertBorder('hline'),
 					left: insertBorder('vline'),
 					right: insertBorder('vline')
@@ -864,7 +864,7 @@
 		};
 		function newTracker() {
 			var trk = $('<div></div>').addClass(cssClass('tracker'));
-			$.browser.msie && trk.css({ opacity: 0, backgroundColor: 'white' });
+			//$.browser.msie && trk.css({ opacity: 0, backgroundColor: 'white' });
 			return trk;
 		};
 

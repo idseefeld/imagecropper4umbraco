@@ -217,9 +217,12 @@ namespace idseefeld.de.imagecropper.imagecropper {
 			int oldWidth = 0;
 			bool forceResize = true;
 			bool ignoreICC = true;
-			using (Bitmap bm = new Bitmap(imgPath))
+			using (System.IO.Stream imgStream = _fileSystem.OpenFile(imgPath))
 			{
-				newWidth = oldWidth = bm.Width;
+				using (Bitmap bm = new Bitmap(imgStream)) //using (Bitmap bm = new Bitmap(imgPath))
+				{
+					newWidth = oldWidth = bm.Width;
+				}
 			}
 			return saveNewImageSize(imgPath, fileExtension, newPath, newWidth, forceResize, oldWidth, ignoreICC, onlyIfNew);
 		}
@@ -255,69 +258,72 @@ namespace idseefeld.de.imagecropper.imagecropper {
 			{
 				try
 				{
-					using (Bitmap orig = new Bitmap(imgPath))
+					using (System.IO.Stream imgStream = _fileSystem.OpenFile(imgPath))
 					{
-						int newHeight;
-						if (forceResize || orig.Width > newWidth)
+						using (Bitmap orig = new Bitmap(imgStream)) //using (Bitmap orig = new Bitmap(imgPath))
 						{
-							newHeight = (int)Math.Round(((double)newWidth) / orig.Width * orig.Height);
-							string settings = String.Empty;
-							ResizeSettings resizeSettings = new ResizeSettings();
-							int cW = newWidth;
-							int cH = newHeight;
-							int oW = orig.Width;
-							int oH = orig.Height;
-							if (cropWidth > 0)
+							int newHeight;
+							if (forceResize || orig.Width > newWidth)
 							{
-								cW = cropWidth;
-								cH = cropHeight;
-								newHeight = sizeHeight;
+								newHeight = (int)Math.Round(((double)newWidth) / orig.Width * orig.Height);
+								string settings = String.Empty;
+								ResizeSettings resizeSettings = new ResizeSettings();
+								int cW = newWidth;
+								int cH = newHeight;
+								int oW = orig.Width;
+								int oH = orig.Height;
+								if (cropWidth > 0)
+								{
+									cW = cropWidth;
+									cH = cropHeight;
+									newHeight = sizeHeight;
 
-								PointF p = new PointF((float)(cropX + cW), (float)(cropY + cH));
-								resizeSettings.CropBottomRight = p;
-								p = new PointF((float)cropX, (float)cropY);
-								resizeSettings.CropTopLeft = p;
-								resizeSettings.CropXUnits = oW;
-								resizeSettings.CropYUnits = oH;
-								resizeSettings.MaxWidth = newWidth;
-								resizeSettings.MaxHeight = newHeight;
+									PointF p = new PointF((float)(cropX + cW), (float)(cropY + cH));
+									resizeSettings.CropBottomRight = p;
+									p = new PointF((float)cropX, (float)cropY);
+									resizeSettings.CropTopLeft = p;
+									resizeSettings.CropXUnits = oW;
+									resizeSettings.CropYUnits = oH;
+									resizeSettings.MaxWidth = newWidth;
+									resizeSettings.MaxHeight = newHeight;
+								}
+								else
+								{
+									resizeSettings.Width = newWidth;
+								}
+								resizeSettings.Mode = FitMode.Stretch;
+								resizeSettings.Scale = ScaleMode.Both;
+								resizeSettings.Quality = quality;
+								resizeSettings.Add("ignoreicc", ignoreICC ? "true" : "false");
+								//ImageResizer only features
+								if (irFeatures != null)
+								{
+									if (irFeatures.SourceFlip != null)
+										resizeSettings.SourceFlip = irFeatures.SourceFlip;
+									if (irFeatures.Flip != null)
+										resizeSettings.Flip = irFeatures.Flip;
+									if (irFeatures.Rotation != 0)
+										resizeSettings.Rotate = irFeatures.Rotation;
+								}
+								using (System.IO.Stream sourceStream = _fileSystem.OpenFile(imgPath),
+									destinationStream = new System.IO.MemoryStream())
+								{
+									ImageJob irJob = new ImageJob(sourceStream, destinationStream, resizeSettings);
+									ImageBuilder.Current.Build(irJob);
+									readyToWrite = true;
+									_fileSystem.AddFile(newPath, destinationStream, true);
+								}
 							}
 							else
 							{
-								resizeSettings.Width = newWidth;
-							}
-							resizeSettings.Mode = FitMode.Stretch;
-							resizeSettings.Scale = ScaleMode.Both;
-							resizeSettings.Quality = quality;
-							resizeSettings.Add("ignoreicc", ignoreICC ? "true" : "false");
-							//ImageResizer only features
-							if (irFeatures != null)
-							{
-								if (irFeatures.SourceFlip != null)
-									resizeSettings.SourceFlip = irFeatures.SourceFlip;
-								if (irFeatures.Flip != null)
-									resizeSettings.Flip = irFeatures.Flip;
-								if (irFeatures.Rotation != 0)
-									resizeSettings.Rotate = irFeatures.Rotation;
-							}
-							using (System.IO.Stream sourceStream = _fileSystem.OpenFile(imgPath),
-								destinationStream = new System.IO.MemoryStream())
-							{
-								ImageJob irJob = new ImageJob(sourceStream, destinationStream, resizeSettings);
-								ImageBuilder.Current.Build(irJob);
-								readyToWrite = true;
-								_fileSystem.AddFile(newPath, destinationStream, true);
+								using (System.IO.Stream sourceStream = _fileSystem.OpenFile(imgPath))
+								{
+									_fileSystem.AddFile(newPath, sourceStream, true);
+								}
 							}
 						}
-						else
-						{
-							using (System.IO.Stream sourceStream = _fileSystem.OpenFile(imgPath))
-							{
-								_fileSystem.AddFile(newPath, sourceStream, true);
-							}
-						}
+						newImgSaved = true;
 					}
-					newImgSaved = true;
 				}
 				catch (Exception ex)
 				{

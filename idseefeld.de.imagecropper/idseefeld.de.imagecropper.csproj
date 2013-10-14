@@ -110,6 +110,9 @@
     <Compile Include="imagecropper\UmbracoImage.cs" />
     <Compile Include="imagecropper\ImageResizerProvider\ImageEngineImageResizer.cs" />
     <Compile Include="imagecropper\ImageResizerProvider\ImageResizerFeatures.cs" />
+    <Compile Include="PhysicalFileSystem.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyHelper.cs" />
   </ItemGroup>
@@ -117,7 +120,6 @@
     <EmbeddedResource Include="imagecropper\Resources\imageCropperScript.js" />
     <EmbeddedResource Include="imagecropper\Resources\Jcrop.gif" />
     <EmbeddedResource Include="imagecropper\Resources\jCropCSS.css" />
-    <EmbeddedResource Include="imagecropper\Resources\jCropScript.js" />
     <EmbeddedResource Include="imagecropper\Resources\json2.js" />
   </ItemGroup>
   <ItemGroup>
@@ -136,6 +138,9 @@
     <EmbeddedResource Include="App_Plugins\ImageCropperExtended\lib\jCropScript.js" />
     <EmbeddedResource Include="App_Plugins\ImageCropperExtended\lib\json2.js" />
     <EmbeddedResource Include="App_Plugins\ImageCropperExtended\lib\product-logo.png" />
+    <Content Include="App_Plugins\ImageCropperExtended\lib\jquery.Jcrop.js" />
+    <Content Include="App_Plugins\ImageCropperExtended\lib\jquery.Jcrop.min.js" />
+    <EmbeddedResource Include="imagecropper\Resources\jCropScript.js" />
     <Content Include="postbuild-xcopy.txt" />
   </ItemGroup>
   <ItemGroup />

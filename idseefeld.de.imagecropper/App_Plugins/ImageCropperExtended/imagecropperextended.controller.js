@@ -7,12 +7,12 @@ function ($scope, assetsService) {
 	assetsService
 	.load([
 		"/App_Plugins/ImageCropperExtended/lib/json2.js",
-		"/App_Plugins/ImageCropperExtended/lib/jCropScript.js",
+		"/App_Plugins/ImageCropperExtended/lib/jquery.Jcrop.min.js",
 		"/App_Plugins/ImageCropperExtended/lib/imageCropperScript.js"
 	])
 	.then(function () {
 		//this function will execute when all dependencies have loaded
-		alert("editor dependencies loaded");
+		//alert("editor dependencies loaded");
 		initImageCropper('body_cropBox_1375', 'body_ctl18', 'body_ctl19');
 	});
 	//load the separate css for the editor to avoid it blocking our js loading

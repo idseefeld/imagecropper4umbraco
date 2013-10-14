@@ -1,25 +1,30 @@
 ﻿using System;
 using System.Drawing;
-using System.Web;
-using Umbraco.Core.IO;
-using umbraco.cms.businesslogic.media;
-using umbraco.Utils;
-using Umbraco.Core.Media;
-using umbraco.BusinessLogic;
-using System.Xml;
+using System.IO;
 using idseefeld.de.imagecropper.Model;
+using umbraco.BusinessLogic;
+using Umbraco.Core;
+using Umbraco.Core.IO;
 
 
 namespace idseefeld.de.imagecropper.imagecropper {
 	public class ImageInfo : PersitenceFactory {
-		public Image image { get; set; }
+		public Image Image { get; set; }
 		public string Name { get; set; }
+		public string Extension { get; set; }
 		public int Width { get; set; }
 		public int Height { get; set; }
 		public float Aspect { get; set; }
 		public DateTimeOffset DateStamp { get; set; }
-		public string Path { get; set; }
-		public string RelativePath { get; set; }
+		/// <summary>
+		/// the image url, UNC path or maped physical file path
+		/// </summary>
+		public string PathOrUrl { get; set; }
+		/// <summary>
+		/// for url based storage or UNC paths this returns the same as PathOrUrl
+		/// for local files this returns the absolute url
+		/// </summary>
+		public string ImageUrl { get; set; }
 
 		private Config _config;
 		private bool ParentIsDocument = false;
@@ -27,52 +32,98 @@ namespace idseefeld.de.imagecropper.imagecropper {
 
 		private bool deleteCropsOnRemoveImage = false;//new delete on upload image remove disabled
 
-		public ImageInfo(string relativeFilePath, Config config, bool ParentIsDocument, umbraco.cms.businesslogic.datatype.FileHandlerData data = null)
+		private string GetRelativeFilePathOrUrl(string fullPathOrUrl)
+		{
+			string RootPath = _fileSystem.GetFullPath("");
+			string _rootUrl = _fileSystem.GetUrl("");
+
+			var relativePath = String.Empty;
+			if (!fullPathOrUrl.StartsWith("http"))
+			{
+				relativePath = fullPathOrUrl
+					.TrimStart(_rootUrl)
+					.Replace('/', Path.DirectorySeparatorChar)
+					.TrimStart(RootPath)
+					.TrimStart(Path.DirectorySeparatorChar);
+			}
+			else
+			{
+				relativePath = fullPathOrUrl.Substring(0, fullPathOrUrl.LastIndexOf('/') + 1);
+			}
+			return relativePath;
+		}
+		private string GetRelativeDirectoryPathOrUrl(string pathOrUrl)
+		{
+			string rVal = String.Empty;
+			if (!pathOrUrl.StartsWith("http") && pathOrUrl.LastIndexOf('/') <= 0)
+			{
+				rVal = pathOrUrl.Substring(0, pathOrUrl.LastIndexOf('\\') + 1);
+			}
+			else
+			{
+				rVal = pathOrUrl.Substring(0, pathOrUrl.LastIndexOf('/') + 1);
+			}
+			return rVal;
+		}
+		private string GetFileName(string pathOrUrl)
+		{
+			string rVal = pathOrUrl;
+
+			int posLastSeparator = pathOrUrl.LastIndexOf('\\');
+			if (posLastSeparator < 0)
+				posLastSeparator = pathOrUrl.LastIndexOf('/');
+			if (posLastSeparator > 0)
+				rVal = pathOrUrl.Substring(posLastSeparator + 1);
+
+			return rVal;
+		}
+		public ImageInfo(string relativeOrFullImageUrl, Config config, bool ParentIsDocument, umbraco.cms.businesslogic.datatype.FileHandlerData data = null)
 		{
 			this._config = config;
 			this.ParentIsDocument = ParentIsDocument;
-			RelativePath = relativeFilePath;
-			string relPath = RelativePath.Substring(0, RelativePath.LastIndexOf('/') + 1);
+			ImageUrl = relativeOrFullImageUrl;
+			if (String.IsNullOrWhiteSpace(PathOrUrl))
+				PathOrUrl = _fileSystem.GetFullPath(_fileSystem.GetRelativePath(relativeOrFullImageUrl));
+			string relPath = GetRelativeDirectoryPathOrUrl(ImageUrl);
 
-			Path = IOHelper.MapPath(relativeFilePath);
-
-			if (_fileSystem.FileExists(Path))
+			if (_fileSystem.FileExists(PathOrUrl))
 			{
 				#region original image exists
-				string fileName = Path.Substring(Path.LastIndexOf('\\') + 1);
+
+				string fileName = GetFileName(PathOrUrl);
 				Name = fileName.Substring(0, fileName.LastIndexOf('.'));
-				using (System.IO.Stream _stream = _fileSystem.OpenFile(Path))
+				using (System.IO.Stream _stream = _fileSystem.OpenFile(PathOrUrl))
 				{
 					try
 					{
-						using (image = Image.FromStream(_stream))
+						using (Image = Image.FromStream(_stream))
 						{
 
-							Width = image.Width;
-							Height = image.Height;
+							Width = Image.Width;
+							Height = Image.Height;
 							Aspect = (float)Width / Height;
-							DateStamp = _fileSystem.GetLastModified(Path);
+							DateStamp = _fileSystem.GetLastModified(PathOrUrl);
 
 							if (config.ResizeMax > 0 && !isCropBase)
 							{
 								string newPath = CreateCropBaseImage(config.ResizeMax, Width, Height, Aspect, DateStamp, config.ResizeEngine);
 								if (!String.IsNullOrEmpty(newPath))
 								{
-									Path = newPath;
-									fileName = Path.Substring(Path.LastIndexOf('\\') + 1);
-									RelativePath = relPath + fileName;
+									PathOrUrl = newPath;
+									fileName = PathOrUrl.Substring(PathOrUrl.LastIndexOf('\\') + 1);
+									ImageUrl = relPath + fileName;
 									Name = fileName.Substring(0, fileName.LastIndexOf('.'));
-									using (System.IO.Stream _stream2 = _fileSystem.OpenFile(Path))
+									using (System.IO.Stream _stream2 = _fileSystem.OpenFile(PathOrUrl))
 									{
 										try
 										{
-											using (image = Image.FromStream(_stream2))
+											using (Image = Image.FromStream(_stream2))
 											{
 
-												Width = image.Width;
-												Height = image.Height;
+												Width = Image.Width;
+												Height = Image.Height;
 												Aspect = (float)Width / Height;
-												DateStamp = _fileSystem.GetLastModified(Path);
+												DateStamp = _fileSystem.GetLastModified(PathOrUrl);
 												isCropBase = true;
 											}
 										}
@@ -167,8 +218,8 @@ namespace idseefeld.de.imagecropper.imagecropper {
 				return "";
 
 			string cropBaseName = String.Format("{0}_{1}", Name, "cb");
-			string path = Path.Substring(0, Path.LastIndexOf('\\'));
-			string ext = ImageTransform.GetAdjustedFileExtension(Path);// Path.Substring(Path.LastIndexOf('.') + 1);
+			string path = PathOrUrl.Substring(0, PathOrUrl.LastIndexOf('\\'));
+			string ext = ImageTransform.GetAdjustedFileExtension(PathOrUrl);// Path.Substring(Path.LastIndexOf('.') + 1);
 			string newPath = String.Format("{0}\\{1}.{2}", path, cropBaseName, ext);
 			if (this._fileSystem.FileExists(newPath))
 			{
@@ -178,7 +229,7 @@ namespace idseefeld.de.imagecropper.imagecropper {
 			}
 
 			bool forceResize = true;//must
-			ResizeEngine.saveNewImageSize(Path, ext, newPath, maxWidth, forceResize, width, _config.IgnoreICC, false);
+			ResizeEngine.saveNewImageSize(PathOrUrl, ext, newPath, maxWidth, forceResize, width, _config.IgnoreICC, false);
 
 			return newPath;
 		}
@@ -189,7 +240,7 @@ namespace idseefeld.de.imagecropper.imagecropper {
 
 		public string Directory
 		{
-			get { return Path.Substring(0, Path.LastIndexOf('\\')); }
+			get { return PathOrUrl.Substring(0, PathOrUrl.LastIndexOf('\\')); }
 		}
 
 		public void GenerateThumbnails(SaveData saveData, Config config)
@@ -240,7 +291,7 @@ namespace idseefeld.de.imagecropper.imagecropper {
 					}
 
 					string newPath = ImageTransform.Execute(
-						Path,
+						PathOrUrl,
 						String.Format("{0}_{1}", Name, preset.Name),
 						cX,
 						cY,
@@ -278,6 +329,8 @@ namespace idseefeld.de.imagecropper.imagecropper {
 		}
 		public static string FixBrowserUnsupportedFormats(string relativeImagePath, IImageResizeEngine ResizeEngine)
 		{
+			var _fileSystem = FileSystemProviderManager.Current.GetFileSystemProvider<MediaFileSystem>();
+
 			string adjustedPath = relativeImagePath;
 			string extension = relativeImagePath.Substring(relativeImagePath.LastIndexOf('.') + 1);
 			if (extension.StartsWith("tif", StringComparison.InvariantCultureIgnoreCase))
@@ -286,8 +339,8 @@ namespace idseefeld.de.imagecropper.imagecropper {
 				adjustedPath = String.Format("{0}.{1}",
 					adjustedPath.Substring(0, adjustedPath.LastIndexOf('.')),
 					extension);
-				string sourceFile = IOHelper.MapPath(relativeImagePath);
-				string newFile = IOHelper.MapPath(adjustedPath);
+				string sourceFile = _fileSystem.GetFullPath(relativeImagePath);//IOHelper.MapPath(relativeImagePath);
+				string newFile = _fileSystem.GetFullPath(adjustedPath);// IOHelper.MapPath(adjustedPath);
 
 				ResizeEngine.saveNewImageSize(sourceFile, extension, newFile, true);
 			}
@@ -296,7 +349,7 @@ namespace idseefeld.de.imagecropper.imagecropper {
 		public static string Execute(string sourceFile, string name, int cropX, int cropY, int cropWidth, int cropHeight, int sizeWidth, int sizeHeight, Config config, MediaFileSystem _fileSystem)
 		{
 			string result = "";
-			if (!_fileSystem.FileExists(sourceFile)) return result;
+			if (String.IsNullOrEmpty(sourceFile) || !_fileSystem.FileExists(sourceFile)) return result;
 
 			string relPath = _fileSystem.GetRelativePath(sourceFile);
 			string path = relPath.Contains("\\") ? relPath.Substring(0, relPath.LastIndexOf('\\')) : relPath;

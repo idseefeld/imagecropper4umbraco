@@ -33,17 +33,22 @@ namespace idseefeld.de.imagecropper.imagecropper
 			}
 			if (_fileSystem.FileExists(imgPath))
 			{
-				Bitmap img = new Bitmap(imgPath);
-				string imgExtension = imgPath.Substring(imgPath.LastIndexOf('.') + 1);
-				int newHeight = (int)((double)newWidth / (double)img.Width * (double)img.Height);
+				using (System.IO.Stream imgStream = _fileSystem.OpenFile(imgPath))
+				{
+					using (Bitmap img = new Bitmap(imgStream))
+					{ //Bitmap img = new Bitmap(imgPath);
+						string imgExtension = imgPath.Substring(imgPath.LastIndexOf('.') + 1);
+						int newHeight = (int)((double)newWidth / (double)img.Width * (double)img.Height);
 
-				ResizeEngine.saveNewImageSize(
-					imgPath,
-					imgExtension,
-					cropPath,
-					newWidth, false, img.Width,
-					ignoreICC,
-					false);
+						ResizeEngine.saveNewImageSize(
+							imgPath,
+							imgExtension,
+							cropPath,
+							newWidth, false, img.Width,
+							ignoreICC,
+							false);
+					}
+				}
 			}
 		}
 		public string GenerateImageByWidth(int newWidth, UmbracoImage umbImage, bool ignoreICC, IImageResizeEngine ResizeEngine)

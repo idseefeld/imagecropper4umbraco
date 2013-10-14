@@ -93,9 +93,9 @@ namespace idseefeld.de.imagecropper.imagecropper {
 			{
 				foreach (var dir in mediaItemDirectories)
 				{
-					string mappedDirPath = IOHelper.MapPath(dir);
 					MediaFileSystem _fileSystem = FileSystemProviderManager.Current.GetFileSystemProvider<MediaFileSystem>();
-					foreach (var file in _fileSystem.GetFiles(mappedDirPath))
+					//string mappedDirPath = IOHelper.MapPath(dir);
+					foreach (var file in _fileSystem.GetFiles(dir))
 					{
 						if (file.Substring(0, file.LastIndexOf('.')).EndsWith(DataType.CROP_POSTFIX))
 						{
@@ -129,6 +129,7 @@ namespace idseefeld.de.imagecropper.imagecropper {
 		{
 			DataType imageCropperDt = new DataType();
 			DataTypeUploadField uploadFieldDt = new DataTypeUploadField();
+			var _fileSystem = FileSystemProviderManager.Current.GetFileSystemProvider<MediaFileSystem>();
 
 			foreach (var prop in properties)
 			{
@@ -154,10 +155,14 @@ namespace idseefeld.de.imagecropper.imagecropper {
 					{
 						int imgWidth = 0;
 						int imgHeight = 0;
-						using (Bitmap img = new Bitmap(HttpContext.Current.Server.MapPath(imgUrl)))
+						var imgPath = _fileSystem.GetRelativePath(imgUrl);
+						using (System.IO.Stream imgStream = _fileSystem.OpenFile(imgPath))
 						{
-							imgWidth = img.Width;
-							imgHeight = img.Height;
+							using (Bitmap img = new Bitmap(imgStream)) //using (Bitmap img = new Bitmap(HttpContext.Current.Server.MapPath(imgUrl)))
+							{
+								imgWidth = img.Width;
+								imgHeight = img.Height;
+							}
 						}
 						if (imgWidth == 0)
 							continue;

@@ -1,13 +1,14 @@
 ﻿<div ng-controller="idseefeld.ImageCropperExtended">
-	<input type="hidden" name="ctl00$body$ctl11" value="/media/1001/p1010800.jpg" />
-	<input type="hidden" name="ctl00$body$ctl12" value="/media/1001/p1010800.jpg" />
-	<input type="hidden" name="ctl00$body$ctl13" value="0" />
-	<img id="body_cropBox_1375" src="/media/1001/p1010800.jpg" />
-			<div class="cropperFeatures">
-	<div class="cropSelector">
-		<input type="hidden" name="ctl00$body$ctl18" id="body_ctl18" value="{ &quot;current&quot;: 0, &quot;crops&quot;: [{&quot;name&quot;:&#39;w800&#39;,&quot;config&quot;:{&quot;targetWidth&quot;:500,&quot;targetHeight&quot;:0,&quot;keepAspect&quot;:false},&quot;value&quot;:{&quot;x&quot;:0,&quot;y&quot;:328,&quot;x2&quot;:2110,&quot;y2&quot;:1108}},{&quot;name&quot;:&#39;teaser&#39;,&quot;config&quot;:{&quot;targetWidth&quot;:300,&quot;targetHeight&quot;:200,&quot;keepAspect&quot;:true},&quot;value&quot;:{&quot;x&quot;:0,&quot;y&quot;:704,&quot;x2&quot;:2112,&quot;y2&quot;:2112}}]}" />
-		<input type="hidden" name="ctl00$body$ctl19" id="body_ctl19" value="0,328,2110,1108;0,704,2112,2112" />
-	</div>
-
-	<textarea ng-model="model.value"></textarea>
+    <div style="width: 600px; height: 400px">
+        <input type="hidden" name="ctl00$body$ctl11" value="/media/1001/p1010800.jpg" />
+        <input type="hidden" name="ctl00$body$ctl12" value="/media/1001/p1010800.jpg" />
+        <input type="text" name="ctl00$body$ctl13" value="0" />
+        <img id="body_cropBox_1375" src="/media/1001/p1010800.jpg" />
+        <div class="cropperFeatures">
+            <div class="cropSelector">
+                <input type="hidden" name="ctl00$body$ctl18" id="body_ctl18" value="{ &quot;current&quot;: 0, &quot;crops&quot;: [{&quot;name&quot;:&#39;w800&#39;,&quot;config&quot;:{&quot;targetWidth&quot;:500,&quot;targetHeight&quot;:0,&quot;keepAspect&quot;:false},&quot;value&quot;:{&quot;x&quot;:0,&quot;y&quot;:328,&quot;x2&quot;:2110,&quot;y2&quot;:1108}},{&quot;name&quot;:&#39;teaser&#39;,&quot;config&quot;:{&quot;targetWidth&quot;:300,&quot;targetHeight&quot;:200,&quot;keepAspect&quot;:true},&quot;value&quot;:{&quot;x&quot;:0,&quot;y&quot;:704,&quot;x2&quot;:2112,&quot;y2&quot;:2112}}]}" />
+                <input ng-model="model.value" type="text" name="ctl00$body$ctl19" id="body_ctl19" value="0,328,2110,1108;0,704,2112,2112" style="width:300px;" />
+            </div>
+        </div>
+    </div>
 </div>

@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "idseefeld.de.imagecropper", "idseefeld.de.imagecropper\idseefeld.de.imagecropper.csproj", "{675C9A37-D36B-4781-A9D6-449E8F043055}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "idseefeld.de.imagecropper.pevc", "idseefeld.de.imagecropper.pevc\idseefeld.de.imagecropper.pevc.csproj", "{B4F2FD07-E5BA-4D3A-9FD8-74BAE33F6276}"

@@ -73,12 +73,12 @@ namespace idseefeld.de.imagecropper.imagecropper
 
 				if (config.GenerateImages)
 				{
-					string extension = ImageTransform.GetAdjustedFileExtension(imageInfo.RelativePath); 
+					string extension = ImageTransform.GetAdjustedFileExtension(imageInfo.ImageUrl); 
 					if (extension.StartsWith("tif", StringComparison.InvariantCultureIgnoreCase))
 						extension = "jpg";
 					XmlNode urlNode = doc.CreateNode(XmlNodeType.Attribute, "url", null);
 					string urlStr = String.Format("{0}/{1}_{2}.{3}",
-							imageInfo.RelativePath.Substring(0,	imageInfo.RelativePath.LastIndexOf('/')),
+							imageInfo.ImageUrl.Substring(0,	imageInfo.ImageUrl.LastIndexOf('/')),
 							imageInfo.Name,
 							preset.Name,
 							extension
@@ -106,7 +106,7 @@ namespace idseefeld.de.imagecropper.imagecropper
 											), DataType.CROP_POSTFIX);
 
 						newUrlNode.Value = String.Format("{0}/{1}.{2}",
-								imageInfo.RelativePath.Substring(0, imageInfo.RelativePath.LastIndexOf('/')),
+								imageInfo.ImageUrl.Substring(0, imageInfo.ImageUrl.LastIndexOf('/')),
 								cropHash,
 								extension
 							);

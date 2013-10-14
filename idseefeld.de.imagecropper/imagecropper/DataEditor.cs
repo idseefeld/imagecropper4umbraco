@@ -90,7 +90,7 @@ namespace idseefeld.de.imagecropper.imagecropper {
 				return;
 			}
 
-			string relativeImagePath = ImageTransform.FixBrowserUnsupportedFormats(
+			string relativeImageUrl = ImageTransform.FixBrowserUnsupportedFormats(
 				uploadControl.Text,
 				config.ResizeEngine
 			);
@@ -104,12 +104,12 @@ namespace idseefeld.de.imagecropper.imagecropper {
 
 			int currentDocumentId = ((umbraco.cms.businesslogic.datatype.DefaultData)data).NodeId;
 
-			ImageInfo imageInfo = new ImageInfo(relativeImagePath, config, ParentIsDocument);
+			ImageInfo imageInfo = new ImageInfo(relativeImageUrl, config, ParentIsDocument);
 
 			cropperUpdatePanel.Visible = false;
 			if (!autoUpdateChangedWidth
 				&& config.ResizeMax != imageInfo.Width
-				&& relativeImagePath != imageInfo.RelativePath)
+				&& relativeImageUrl != imageInfo.ImageUrl)
 			{
 				cropperUpdateLabel.Text = "The width setting of this cropper has changed.";
 				cropperUpdateLabel.ForeColor = System.Drawing.Color.Red;
@@ -122,9 +122,9 @@ namespace idseefeld.de.imagecropper.imagecropper {
 			cropperUpdatePanel.Controls.Add(cropperUpdateLabel);
 			cropperUpdatePanel.Controls.Add(cropperUpdateButton);
 			Controls.Add(cropperUpdatePanel);
-			cropImagePathHidden.Value = relativeImagePath;
+			cropImagePathHidden.Value = relativeImageUrl;
 			Controls.Add(cropImagePathHidden);
-			imagePathHidden.Value = imageInfo.RelativePath;
+			imagePathHidden.Value = imageInfo.ImageUrl;
 			Controls.Add(imagePathHidden);
 			reziseWidthHidden.Value = config.ResizeMax.ToString();
 			Controls.Add(reziseWidthHidden);
@@ -157,7 +157,7 @@ namespace idseefeld.de.imagecropper.imagecropper {
 
 			Controls.Add(featurePanel);
 
-			UpdateCropper(relativeImagePath);
+			UpdateCropper(relativeImageUrl);
 
 			Page.ClientScript.RegisterClientScriptBlock(GetType(), "emptyImageCss", "<style type='text/css'>img[src='']{display:none;}</style>", false);
 
@@ -223,13 +223,13 @@ namespace idseefeld.de.imagecropper.imagecropper {
 				ImageTools iTools = new ImageTools();
 				iTools.GenerateImageByWidth(config.ResizeMax,
 					relativeImagePath,
-					imageInfo.RelativePath,
+					imageInfo.ImageUrl,
 					config.IgnoreICC,
 					config.ResizeEngine);
 				imageInfo = new ImageInfo(relativeImagePath, config, ParentIsDocument);
 			}
 
-			imgImage.ImageUrl = imageInfo.RelativePath;// relativeImagePath;
+			imgImage.ImageUrl = imageInfo.ImageUrl;// relativeImagePath;
 
 			imgImage.ID = String.Format("cropBox_{0}", propertyId);
 

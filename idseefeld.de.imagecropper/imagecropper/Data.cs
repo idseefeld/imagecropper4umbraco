@@ -14,7 +14,6 @@ namespace idseefeld.de.imagecropper.imagecropper {
 			Y2 = y2;
 		}
 	}
-
 	enum DefaultCropPosition {
 		CenterCenter = 0,
 		CenterTop,

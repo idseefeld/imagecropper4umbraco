@@ -90,3 +90,5 @@ www/App_Data/umbraco.config
 */App_Browsers/*
 */App_Data/TEMP/*
 */_systemUmbracoIndexDontDelete/*
+/jcrop
+/packages

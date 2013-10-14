@@ -30,7 +30,7 @@ namespace idseefeld.de.imagecropper.imagecropper {
 		private bool ParentIsDocument = false;
 		private bool isCropBase = false;
 
-		private bool deleteCropsOnRemoveImage = false;//new delete on upload image remove disabled
+		private bool deleteCropsOnRemoveImage = true;//false;//new delete on upload image remove disabled
 
 		private string GetRelativeFilePathOrUrl(string fullPathOrUrl)
 		{

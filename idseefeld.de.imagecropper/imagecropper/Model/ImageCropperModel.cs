@@ -123,8 +123,7 @@ namespace idseefeld.de.imagecropper.Model {
 			try
 			{
 				_data.LoadXml(propertyValue);
-
-				XmlNodeList nodes = _data.DocumentElement.SelectNodes("crop");
+				XmlNodeList nodes = _data.DocumentElement.SelectNodes("descendant-or-self::crop");
 				if (nodes.Count > 0)
 				{
 					Crops = new List<CropModel>();

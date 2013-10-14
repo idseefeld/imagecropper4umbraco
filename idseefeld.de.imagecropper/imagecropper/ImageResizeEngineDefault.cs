@@ -8,6 +8,7 @@ using Umbraco.Core.IO;
 using System.Web.UI;
 using System.Xml;
 using Umbraco.Core.Media;
+using System.IO;
 
 namespace idseefeld.de.imagecropper.imagecropper {
 	public class ImageResizeEngineDefault : PersitenceFactory, IImageResizeEngine {
@@ -131,7 +132,7 @@ namespace idseefeld.de.imagecropper.imagecropper {
 									{
 										bmp.Save(memoryStream, imgEncoder, imgEncoderParameters);
 										if (memoryStream.CanSeek)
-											memoryStream.Seek(0, 0);
+											memoryStream.Seek(0, SeekOrigin.Begin);
 
 										_fileSystem.AddFile(newPath, memoryStream, true);
 										//for backward compatibilty save also JPEG for PNGs
@@ -148,7 +149,7 @@ namespace idseefeld.de.imagecropper.imagecropper {
 											bmp.Save(memoryStreamCopy, imgEncoder, imgEncoderParameters);
 
 											if (memoryStreamCopy.CanSeek)
-												memoryStreamCopy.Seek(0, 0);
+												memoryStreamCopy.Seek(0, SeekOrigin.Begin);
 
 											_fileSystem.AddFile(newPathJpg, memoryStreamCopy, true);
 										}

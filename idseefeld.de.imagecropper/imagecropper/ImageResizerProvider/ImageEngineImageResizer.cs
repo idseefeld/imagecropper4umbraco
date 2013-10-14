@@ -305,12 +305,27 @@ namespace idseefeld.de.imagecropper.imagecropper {
 									if (irFeatures.Rotation != 0)
 										resizeSettings.Rotate = irFeatures.Rotation;
 								}
-								using (System.IO.Stream sourceStream = _fileSystem.OpenFile(imgPath),
-									destinationStream = new System.IO.MemoryStream())
+								//using (System.IO.Stream sourceStream = _fileSystem.OpenFile(imgPath),
+								//	destinationStream = new System.IO.MemoryStream())
+								//{
+								//	ImageJob irJob = new ImageJob(sourceStream, destinationStream, resizeSettings);
+								//	ImageBuilder.Current.Build(irJob);
+								//	readyToWrite = true;
+								//	_fileSystem.AddFile(newPath, destinationStream, true);
+								//}
+								using (System.IO.Stream destinationStream = new System.IO.MemoryStream())
 								{
-									ImageJob irJob = new ImageJob(sourceStream, destinationStream, resizeSettings);
+									if (imgStream.CanSeek)
+									{
+										imgStream.Seek(0, System.IO.SeekOrigin.Begin);
+									}
+									ImageJob irJob = new ImageJob(imgStream, destinationStream, resizeSettings);
 									ImageBuilder.Current.Build(irJob);
 									readyToWrite = true;
+									if (destinationStream.CanSeek)
+									{
+										destinationStream.Seek(0, System.IO.SeekOrigin.Begin);
+									}
 									_fileSystem.AddFile(newPath, destinationStream, true);
 								}
 							}

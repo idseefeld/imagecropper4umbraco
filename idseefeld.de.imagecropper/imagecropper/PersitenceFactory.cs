@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Umbraco.Core.IO;
@@ -26,12 +27,25 @@ namespace idseefeld.de.imagecropper.imagecropper
 			if (!_fileSystem.FileExists(sourceFile))
 				return newPath;
 
-			string path = sourceFile.Substring(0, sourceFile.LastIndexOf('\\'));
-			newPath = String.Format("{0}\\{1}.{2}", path, name, extension);
+			string path = String.Empty;
+			if (sourceFile.StartsWith("http"))
+			{
+				path = sourceFile.Substring(0, sourceFile.LastIndexOf('/'));
+				newPath = String.Format("{0}/{1}.{2}", path, name, extension);
+			}
+			else
+			{
+				path = sourceFile.Substring(0, sourceFile.LastIndexOf('\\'));
+				newPath = String.Format("{0}\\{1}.{2}", path, name, extension);
+			}
 
 			if (!_fileSystem.FileExists(newPath)){
 				using (System.IO.Stream sourceStream = _fileSystem.OpenFile(sourceFile))
 				{
+					if (sourceStream.CanSeek)
+					{
+						sourceStream.Seek(0, SeekOrigin.Begin);
+					}
 					_fileSystem.AddFile(newPath, sourceStream);
 				}
 			}

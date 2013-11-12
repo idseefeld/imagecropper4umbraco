@@ -14,18 +14,48 @@ using umbraco.editorControls.uploadfield;
 using umbraco.cms.businesslogic.property;
 using umbraco.presentation;
 using Umbraco.Core.IO;
+using Umbraco.Core.Services;
+using Umbraco.Core.Models;
+using Umbraco.Core;
 
 namespace idseefeld.de.imagecropper.imagecropper {
-	public class ImageEventsForCropper : ApplicationStartupHandler {
+	public class ImageEventsForCropper : Umbraco.Core.ApplicationEventHandler// ApplicationStartupHandler
+	{
 		//ToDo: make contentType with croppers configurable
 
 		public ImageEventsForCropper()
 		{
-			Media.AfterSave += new Media.SaveEventHandler(Media_AfterSave);
+			//Media.AfterSave += new Media.SaveEventHandler(Media_AfterSave);
 			//Document.AfterSave += new Document.SaveEventHandler(Document_AfterSave);
 			Member.AfterSave += new Member.SaveEventHandler(Member_AfterSave);
-
 			Document.BeforePublish += new Document.PublishEventHandler(Document_BeforePublish);
+
+			MediaService.Saving += MediaService_Saving;
+			//MediaService.Saved += MediaService_Saved;
+		}
+
+		void MediaService_Saving(IMediaService sender, Umbraco.Core.Events.SaveEventArgs<IMedia> e)
+		{
+			foreach (var entity in e.SavedEntities)
+			{
+				bool isDirty = HandleImageCropper(entity.PropertyTypes, entity.Properties, false);
+				//if (isDirty)
+				//{
+				//	sender.Save(entity, 0, false);
+				//}
+			}
+		}
+
+		void MediaService_Saved(IMediaService sender, Umbraco.Core.Events.SaveEventArgs<Umbraco.Core.Models.IMedia> e)
+		{
+			foreach (var entity in e.SavedEntities)
+			{
+				bool isDirty = HandleImageCropper(entity.PropertyTypes, entity.Properties, false);
+				if (isDirty)
+				{
+					sender.Save(entity, 0, false);
+				}
+			}
 		}
 
 		void Member_AfterSave(Member sender, umbraco.cms.businesslogic.SaveEventArgs e)
@@ -34,10 +64,10 @@ namespace idseefeld.de.imagecropper.imagecropper {
 		}
 
 
-		void Media_AfterSave(Media sender, umbraco.cms.businesslogic.SaveEventArgs e)
-		{
-			HandleImageCropper(sender.GenericProperties, false);
-		}
+		//void Media_AfterSave(Media sender, umbraco.cms.businesslogic.SaveEventArgs e)
+		//{
+		//	HandleImageCropper(sender.GenericProperties, false);
+		//}
 
 
 		void Document_AfterSave(Document sender, umbraco.cms.businesslogic.SaveEventArgs e)
@@ -123,6 +153,108 @@ namespace idseefeld.de.imagecropper.imagecropper {
 			}
 		}
 
+		private static bool HandleImageCropper(
+			IEnumerable<PropertyType> propertyTypes, 
+			PropertyCollection properties,
+			bool parentIsDocument)
+		{
+			bool isDirty = false;
+			DataType imageCropperDt = new DataType();
+			DataTypeUploadField uploadFieldDt = new DataTypeUploadField();
+			var _fileSystem = FileSystemProviderManager.Current.GetFileSystemProvider<MediaFileSystem>();
+			IDataTypeService ds = ApplicationContext.Current.Services.DataTypeService;
+			var uploadProp = propertyTypes
+				.Where(p => p.DataTypeId.Equals(uploadFieldDt.Id))
+				.FirstOrDefault();
+			var cropperProp = propertyTypes
+				.Where(p => p.DataTypeId.Equals(imageCropperDt.Id))
+				.FirstOrDefault();
+			if (cropperProp == null || uploadProp == null)
+				return isDirty;
+
+			var prop = properties
+				.Where(p => p.Alias.Equals(cropperProp.Alias))
+				.FirstOrDefault();
+
+			var prevalues = ds.GetPreValuesByDataTypeId(cropperProp.DataTypeDefinitionId);
+			Config config = new Config(prevalues.FirstOrDefault());
+
+			if (!uploadProp.Alias.Equals(config.UploadPropertyAlias))
+				return isDirty;//I assume that only one cropper data type is defined for a media image
+
+			var uploadFieldProp = properties
+				.Where(p => p.Alias.Equals(uploadProp.Alias))
+				.FirstOrDefault();
+
+			string imgUrl = uploadFieldProp.Value != null ? uploadFieldProp.Value.ToString() : String.Empty;
+			if (String.IsNullOrEmpty(imgUrl))
+				return isDirty;
+
+			string imgUrlWithoutExtension = imgUrl.Substring(0, imgUrl.LastIndexOf('.'));
+
+			if (prop.Value == null
+				|| String.IsNullOrEmpty(prop.Value.ToString())
+				|| !prop.Value.ToString().Contains(imgUrlWithoutExtension + "_"))
+			{
+				int imgWidth = 0;
+				int imgHeight = 0;
+				var imgPath = _fileSystem.GetRelativePath(imgUrl);
+				using (System.IO.Stream imgStream = _fileSystem.OpenFile(imgPath))
+				{
+					using (Bitmap img = new Bitmap(imgStream)) //using (Bitmap img = new Bitmap(HttpContext.Current.Server.MapPath(imgUrl)))
+					{
+						imgWidth = img.Width;
+						imgHeight = img.Height;
+					}
+				}
+				if (imgWidth == 0)
+					return isDirty;
+
+				var presets = config.presets;
+				//see: idseefeld.de.imagecropper.imagecropper.DataEditor.Save() for how to setup cropper default property.Value
+				StringBuilder sbRaw = new StringBuilder();
+				ImageInfo imageInfo = new ImageInfo(imgUrl, config, parentIsDocument);
+				int cropIndex = 1;
+				foreach (var presetConfig in presets)
+				{
+					Preset preset = (Preset)presetConfig;
+					Crop crop;
+					if (imageInfo.Exists)
+					{
+						crop = preset.Fit(imageInfo);
+					}
+					else
+					{
+						crop.X = 0;
+						crop.Y = 0;
+						crop.X2 = preset.TargetWidth;
+						crop.Y2 = preset.TargetHeight;
+					}
+					sbRaw.Append(String.Format("{0},{1},{2},{3}", crop.X, crop.Y, crop.X2, crop.Y2));
+					if (cropIndex < presets.Count)
+					{
+						sbRaw.Append(";");
+					}
+					if (config.GenerateImages)
+					{
+						GenerateCrop(
+							preset,
+							imgUrl,
+							config,
+							parentIsDocument,
+							prop.Value == null ? String.Empty : prop.Value.ToString(),
+							cropIndex - 1
+						);
+					}
+					cropIndex++;
+				}
+				SaveData saveData = new SaveData(sbRaw.ToString());
+				//save cropper default property.Value
+				prop.Value = saveData.Xml(config, imageInfo, parentIsDocument);
+				isDirty = true;
+			}
+			return isDirty;
+		}
 
 
 		private static void HandleImageCropper(Properties properties, bool parentIsDocument)

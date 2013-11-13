@@ -46,7 +46,7 @@ namespace idseefeld.de.imagecropper.imagecropper {
 
 		public DataEditor(umbraco.interfaces.IData Data, string Configuration)
 		{
-			data = (umbraco.cms.businesslogic.datatype.FileHandlerData) Data;
+			data = (umbraco.cms.businesslogic.datatype.FileHandlerData)Data;
 			config = new Config(Configuration);
 		}
 
@@ -326,66 +326,89 @@ namespace idseefeld.de.imagecropper.imagecropper {
 				}
 
 				// stored
-				if (xml.DocumentElement != null && xml.DocumentElement.ChildNodes.Count == config.presets.Count)
+				if (xml.DocumentElement != null)
 				{
-					XmlNode xmlNode = xml.DocumentElement.ChildNodes[i];
-
-					string newUrl = xmlNode.Attributes["newUrl"] != null
-						? xmlNode.Attributes["newUrl"].Value : String.Empty;
-					if (!String.IsNullOrEmpty(newUrl))
+					XmlNode xmlNode = null;
+					foreach (var child in xml.DocumentElement.ChildNodes)
 					{
-						config.versionedCropFiles.Add(newUrl);
-					}
-					int xml_x = Convert.ToInt32(xmlNode.Attributes["x"].Value);
-					int xml_y = Convert.ToInt32(xmlNode.Attributes["y"].Value);
-					int xml_x2 = Convert.ToInt32(xmlNode.Attributes["x2"].Value);
-					int xml_y2 = Convert.ToInt32(xmlNode.Attributes["y2"].Value);
-
-					int xml_width = -1;
-					int xml_height = -1;
-					if (xmlNode.Attributes["width"] != null)
-						int.TryParse(xmlNode.Attributes["width"].Value, out xml_width);
-					if (xmlNode.Attributes["height"] != null)
-						int.TryParse(xmlNode.Attributes["height"].Value, out xml_height);
-
-					DateTime fileDate = Convert.ToDateTime(xml.DocumentElement.Attributes["date"].Value);
-					if (xml_width < 0 || xml_height < 0)
-					{
-						//update from previous version or default cropper: use default
-					}else if (xml_width > 0 && xml_height > 0
-						&& preset.TargetHeight > 0
-						&& preset.TargetWidth > 0
-						&& (preset.TargetWidth != xml_width || preset.TargetHeight != xml_height))
-					{
-						float targetAR = (float)preset.TargetWidth / preset.TargetHeight;
-						float xml_AR = (float)xml_width / xml_height;
-						if (targetAR < xml_AR)
+						if (((XmlNode)child).Attributes["name"].Value
+							.Equals(preset.Name, StringComparison.InvariantCultureIgnoreCase))
 						{
-							//target is more portrait like then stored value
-							crop.Y = xml_y;
-							crop.Y2 = xml_y2;
-							int newHeight = xml_y2 - xml_y;
-							int newWidth = (int)Math.Round(newHeight * targetAR);
-							crop.X = (xml_x2 - xml_x - newWidth) / 2 + xml_x;
-							crop.X2 = crop.X + newWidth;
+							xmlNode = (XmlNode)child;
+							break;
 						}
-						else
+					}
+					if (xmlNode == null)
+						xmlNode = xml.DocumentElement.ChildNodes[i];
+
+					if (xmlNode != null)
+					{
+						string newUrl = xmlNode.Attributes["newUrl"] != null
+							? xmlNode.Attributes["newUrl"].Value : String.Empty;
+						if (!String.IsNullOrEmpty(newUrl))
 						{
-							//target is more landscape like then stored value
+							config.versionedCropFiles.Add(newUrl);
+						}
+						int xml_x = Convert.ToInt32(xmlNode.Attributes["x"].Value);
+						int xml_y = Convert.ToInt32(xmlNode.Attributes["y"].Value);
+						int xml_x2 = Convert.ToInt32(xmlNode.Attributes["x2"].Value);
+						int xml_y2 = Convert.ToInt32(xmlNode.Attributes["y2"].Value);
+
+						int xml_width = -1;
+						int xml_height = -1;
+						if (xmlNode.Attributes["width"] != null)
+							int.TryParse(xmlNode.Attributes["width"].Value, out xml_width);
+						if (xmlNode.Attributes["height"] != null)
+							int.TryParse(xmlNode.Attributes["height"].Value, out xml_height);
+						if (xml_width < 0 && xml_height < 0)
+						{
+							//update from previous version or default cropper: use preset values
+							xml_height = preset.TargetHeight;
+							xml_width = preset.TargetWidth;
+						}
+						DateTime fileDate = Convert.ToDateTime(xml.DocumentElement.Attributes["date"].Value);
+
+						string xml_name = xmlNode.Attributes["name"].Value;
+						//if (xml_width < 0 || xml_height < 0)
+						if (!xml_name.Equals(preset.Name, StringComparison.InvariantCultureIgnoreCase))
+						{
+							//cropper definiton is different: use default
+						}
+						else if (xml_width > 0 && xml_height > 0
+						   && preset.TargetHeight > 0
+						   && preset.TargetWidth > 0
+						   && (preset.TargetWidth != xml_width || preset.TargetHeight != xml_height))
+						{
+							float targetAR = (float)preset.TargetWidth / preset.TargetHeight;
+							float xml_AR = (float)xml_width / xml_height;
+							if (targetAR < xml_AR)
+							{
+								//target is more portrait like then stored value
+								crop.Y = xml_y;
+								crop.Y2 = xml_y2;
+								int newHeight = xml_y2 - xml_y;
+								int newWidth = (int)Math.Round(newHeight * targetAR);
+								crop.X = (xml_x2 - xml_x - newWidth) / 2 + xml_x;
+								crop.X2 = crop.X + newWidth;
+							}
+							else
+							{
+								//target is more landscape like then stored value
+								crop.X = xml_x;
+								crop.X2 = xml_x2;
+								int newWidth = xml_x2 - xml_x;
+								int newHeight = (int)Math.Round(newWidth / targetAR);
+								crop.Y = (xml_y2 - xml_y - newHeight) / 2 + xml_y;
+								crop.Y2 = crop.Y + newHeight;
+							}
+						}
+						else if (crop.X != xml_x || crop.X2 != xml_x2 || crop.Y != xml_y || crop.Y2 != xml_y2)
+						{
 							crop.X = xml_x;
+							crop.Y = xml_y;
 							crop.X2 = xml_x2;
-							int newWidth = xml_x2 - xml_x;
-							int newHeight = (int)Math.Round(newWidth / targetAR);
-							crop.Y = (xml_y2 - xml_y - newHeight) / 2 + xml_y;
-							crop.Y2 = crop.Y + newHeight;
+							crop.Y2 = xml_y2;
 						}
-					}
-					else if (crop.X != xml_x || crop.X2 != xml_x2 || crop.Y != xml_y || crop.Y2 != xml_y2)
-					{
-						crop.X = xml_x;
-						crop.Y = xml_y;
-						crop.X2 = xml_x2;
-						crop.Y2 = xml_y2;
 					}
 				}
 

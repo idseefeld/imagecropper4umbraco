@@ -5,6 +5,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "idseefeld.de.imagecropper",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "idseefeld.de.imagecropper.pevc", "idseefeld.de.imagecropper.pevc\idseefeld.de.imagecropper.pevc.csproj", "{B4F2FD07-E5BA-4D3A-9FD8-74BAE33F6276}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "idseefeld.de.imagecropper.events", "idseefeld.de.imagecropper.events\idseefeld.de.imagecropper.events.csproj", "{0D56731B-9416-4FE2-BB74-B53F31EDE5D2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{675C9A37-D36B-4781-A9D6-449E8F043055} = {675C9A37-D36B-4781-A9D6-449E8F043055}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "idseefeld.de.imagecropper.events.v4", "idseefeld.de.imagecropper.events.v4\idseefeld.de.imagecropper.events.v4.csproj", "{34F42C61-6E4B-44E5-9037-5E50890ECE5C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{675C9A37-D36B-4781-A9D6-449E8F043055} = {675C9A37-D36B-4781-A9D6-449E8F043055}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +29,14 @@ Global
 		{B4F2FD07-E5BA-4D3A-9FD8-74BAE33F6276}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4F2FD07-E5BA-4D3A-9FD8-74BAE33F6276}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4F2FD07-E5BA-4D3A-9FD8-74BAE33F6276}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D56731B-9416-4FE2-BB74-B53F31EDE5D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D56731B-9416-4FE2-BB74-B53F31EDE5D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D56731B-9416-4FE2-BB74-B53F31EDE5D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D56731B-9416-4FE2-BB74-B53F31EDE5D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34F42C61-6E4B-44E5-9037-5E50890ECE5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34F42C61-6E4B-44E5-9037-5E50890ECE5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34F42C61-6E4B-44E5-9037-5E50890ECE5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34F42C61-6E4B-44E5-9037-5E50890ECE5C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

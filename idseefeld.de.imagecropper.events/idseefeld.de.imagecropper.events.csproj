@@ -1,18 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{B4F2FD07-E5BA-4D3A-9FD8-74BAE33F6276}</ProjectGuid>
+    <ProjectGuid>{0D56731B-9416-4FE2-BB74-B53F31EDE5D2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>idseefeld.de.imagecropper.pevc</RootNamespace>
-    <AssemblyName>idseefeld.de.imagecropper.pevc</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <RootNamespace>idseefeld.de.imagecropper.events</RootNamespace>
+    <AssemblyName>idseefeld.de.imagecropper.events</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <IsCompassProject>True</IsCompassProject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,7 +20,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\idseefeld.de.imagecropper.pevc.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -36,20 +33,16 @@
     <Reference Include="businesslogic">
       <HintPath>..\externals\businesslogic.dll</HintPath>
     </Reference>
-    <Reference Include="ClientDependency.Core">
-      <HintPath>..\externals\ClientDependency.Core.dll</HintPath>
-    </Reference>
     <Reference Include="cms">
       <HintPath>..\externals\cms.dll</HintPath>
-    </Reference>
-    <Reference Include="controls">
-      <HintPath>..\externals\controls.dll</HintPath>
     </Reference>
     <Reference Include="interfaces">
       <HintPath>..\externals\interfaces.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -61,37 +54,22 @@
     <Reference Include="Umbraco.Core">
       <HintPath>..\externals\Umbraco.Core.dll</HintPath>
     </Reference>
-    <Reference Include="umbraco.DataLayer">
-      <HintPath>..\externals\umbraco.DataLayer.dll</HintPath>
-    </Reference>
     <Reference Include="umbraco.editorControls">
       <HintPath>..\externals\umbraco.editorControls.dll</HintPath>
     </Reference>
-    <Reference Include="umbraco.MacroEngines">
-      <HintPath>..\externals\umbraco.MacroEngines.dll</HintPath>
-    </Reference>
-    <Reference Include="umbraco.macroRenderings">
-      <HintPath>..\externals\umbraco.macroRenderings.dll</HintPath>
-    </Reference>
-    <Reference Include="umbraco.providers">
-      <HintPath>..\externals\umbraco.providers.dll</HintPath>
-    </Reference>
-    <Reference Include="Umbraco.Web.UI">
-      <HintPath>..\externals\Umbraco.Web.UI.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ImageCropperExtendedPropertyEditorValueConverter.cs" />
+    <Compile Include="ImageEventsForCropper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\idseefeld.de.imagecropper\idseefeld.de.imagecropper.csproj">
-      <Project>{675C9A37-D36B-4781-A9D6-449E8F043055}</Project>
-      <Name>idseefeld.de.imagecropper</Name>
-    </ProjectReference>
+    <Content Include="postbuild-xcopy.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="postbuild-xcopy.txt" />
+    <ProjectReference Include="..\idseefeld.de.imagecropper\idseefeld.de.imagecropper.csproj">
+      <Project>{675c9a37-d36b-4781-a9d6-449e8f043055}</Project>
+      <Name>idseefeld.de.imagecropper</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

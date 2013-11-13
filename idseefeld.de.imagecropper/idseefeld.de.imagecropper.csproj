@@ -99,7 +99,6 @@
     <Compile Include="imagecropper\DataTypeData.cs" />
     <Compile Include="imagecropper\Helper.cs" />
     <Compile Include="imagecropper\IImageResizeEngine.cs" />
-    <Compile Include="imagecropper\ImageEventsForCropper.cs" />
     <Compile Include="imagecropper\ImageInfo.cs" />
     <Compile Include="imagecropper\ImageResizeEngineDefault.cs" />
     <Compile Include="imagecropper\ImageTools.cs" />

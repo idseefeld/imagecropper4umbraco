@@ -6,50 +6,35 @@ using System.Text;
 using System.Xml;
 using umbraco.cms.businesslogic.web;
 using umbraco.cms.businesslogic.member;
-using umbraco.editorControls.uploadfield;
 using umbraco.cms.businesslogic.property;
+using umbraco.editorControls.uploadfield;
+using Umbraco.Core;
 using Umbraco.Core.IO;
 using Umbraco.Core.Services;
 using Umbraco.Core.Models;
-using Umbraco.Core;
 
 namespace idseefeld.de.imagecropper.imagecropper {
-	public class ImageEventsForCropper : Umbraco.Core.ApplicationEventHandler// ApplicationStartupHandler
+	public class ImageEventsForCropper : Umbraco.Core.ApplicationEventHandler
 	{
 		//ToDo: make contentType with croppers configurable
 
 		public ImageEventsForCropper()
 		{
-			//Media.AfterSave += new Media.SaveEventHandler(Media_AfterSave);
-			//Document.AfterSave += new Document.SaveEventHandler(Document_AfterSave);
 			Member.AfterSave += new Member.SaveEventHandler(Member_AfterSave);
-			Document.BeforePublish += new Document.PublishEventHandler(Document_BeforePublish);
+			//Document.BeforePublish += new Document.PublishEventHandler(Document_BeforePublish);
 
 			MediaService.Saving += MediaService_Saving;
-			//MediaService.Saved += MediaService_Saved;
+			ContentService.Publishing += ContentService_Publishing;
 		}
+
+		
 
 		void MediaService_Saving(IMediaService sender, Umbraco.Core.Events.SaveEventArgs<IMedia> e)
 		{
 			foreach (var entity in e.SavedEntities)
 			{
 				bool isDirty = HandleImageCropper(entity.PropertyTypes, entity.Properties, false);
-				//if (isDirty)
-				//{
-				//	sender.Save(entity, 0, false);
-				//}
-			}
-		}
 
-		void MediaService_Saved(IMediaService sender, Umbraco.Core.Events.SaveEventArgs<Umbraco.Core.Models.IMedia> e)
-		{
-			foreach (var entity in e.SavedEntities)
-			{
-				bool isDirty = HandleImageCropper(entity.PropertyTypes, entity.Properties, false);
-				if (isDirty)
-				{
-					sender.Save(entity, 0, false);
-				}
 			}
 		}
 
@@ -58,23 +43,13 @@ namespace idseefeld.de.imagecropper.imagecropper {
 			HandleImageCropper(sender.GenericProperties, false);
 		}
 
-
-		//void Media_AfterSave(Media sender, umbraco.cms.businesslogic.SaveEventArgs e)
-		//{
-		//	HandleImageCropper(sender.GenericProperties, false);
-		//}
-
-
-		void Document_AfterSave(Document sender, umbraco.cms.businesslogic.SaveEventArgs e)
+		void ContentService_Publishing(Umbraco.Core.Publishing.IPublishingStrategy sender, Umbraco.Core.Events.PublishEventArgs<IContent> e)
 		{
-			//ToDo: setup a list of doctype with cropper props set to auto generate crops
-			// save the list in application and use the list here instead of the appsetting in web.config
+			DataType imageCropperDt = new DataType();
 
-			//At least auto crops for croppers on document types are not that important, 
-			//because the regular workflow involves a second save throug publishing 
-			//and the crops are more coupled with the content. 
+			List<string> activeFiles = new List<string>();
+			List<string> mediaItemDirectories = new List<string>();
 
-			//HandleImageCropper(sender.GenericProperties, false);
 		}
 		void Document_BeforePublish(Document sender, umbraco.cms.businesslogic.PublishEventArgs e)
 		{

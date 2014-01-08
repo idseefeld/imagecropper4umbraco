@@ -45,7 +45,11 @@ namespace idseefeld.de.imagecropper.imagecropper
 
 				XmlNode nameNode = doc.CreateNode(XmlNodeType.Attribute, "name", null);
 				nameNode.Value = preset.Name;
-				newNode.Attributes.SetNamedItem(nameNode);
+                newNode.Attributes.SetNamedItem(nameNode);
+
+                XmlNode versionNode = doc.CreateNode(XmlNodeType.Attribute, "version", null);
+                versionNode.Value = (config.Version + 1).ToString();
+                newNode.Attributes.SetNamedItem(versionNode);
 
 				XmlNode xNode = doc.CreateNode(XmlNodeType.Attribute, "x", null);
 				xNode.Value = crop.X.ToString();

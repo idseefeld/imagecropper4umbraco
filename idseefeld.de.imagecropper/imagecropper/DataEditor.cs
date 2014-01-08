@@ -343,6 +343,12 @@ namespace idseefeld.de.imagecropper.imagecropper {
 
 					if (xmlNode != null)
 					{
+                        int version = 0;
+                        if (xmlNode.Attributes["version"] != null)
+                        {
+                            int.TryParse(xmlNode.Attributes["version"].Value, out version);
+                        }
+                        config.Version = version;
 						string newUrl = xmlNode.Attributes["newUrl"] != null
 							? xmlNode.Attributes["newUrl"].Value : String.Empty;
 						if (!String.IsNullOrEmpty(newUrl))

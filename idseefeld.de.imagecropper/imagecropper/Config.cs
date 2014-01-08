@@ -9,7 +9,8 @@ namespace idseefeld.de.imagecropper.imagecropper {
 	public class Config {
 		public string UploadPropertyAlias { get; set; }
 		public string BackgroundColor { get; set; }
-		public int ResizeMax { get; set; }
+        public int ResizeMax { get; set; }
+        public int Version { get; set; }
 		public bool GenerateImages { get; set; }
 		public bool IgnoreICC { get; set; }
 		public IImageResizeEngine ResizeEngine { get; set; }

@@ -23,6 +23,10 @@ namespace idseefeld.de.imagecropper.imagecropper
 			ignoreICCNode.Value = config.IgnoreICC ? "true":"false";
 			root.Attributes.SetNamedItem(ignoreICCNode);
 
+            XmlNode versionNode = doc.CreateNode(XmlNodeType.Attribute, "version", null);
+            versionNode.Value = (config.Version + 1).ToString();
+            root.Attributes.SetNamedItem(versionNode);
+
 			for (int i = 0; i < data.Count; i++)
 			{
 				Crop crop = (Crop)data[i];
@@ -47,9 +51,9 @@ namespace idseefeld.de.imagecropper.imagecropper
 				nameNode.Value = preset.Name;
                 newNode.Attributes.SetNamedItem(nameNode);
 
-                XmlNode versionNode = doc.CreateNode(XmlNodeType.Attribute, "version", null);
-                versionNode.Value = (config.Version + 1).ToString();
-                newNode.Attributes.SetNamedItem(versionNode);
+                //XmlNode cropVersionNode = doc.CreateNode(XmlNodeType.Attribute, "version", null);
+                //cropVersionNode.Value = (config.Version + 1).ToString();
+                //newNode.Attributes.SetNamedItem(cropVersionNode);
 
 				XmlNode xNode = doc.CreateNode(XmlNodeType.Attribute, "x", null);
 				xNode.Value = crop.X.ToString();
@@ -91,6 +95,7 @@ namespace idseefeld.de.imagecropper.imagecropper
 					newNode.Attributes.SetNamedItem(urlNode);
 
 					//support preview / publish
+                    //ToDo: integrate version into hash
 					XmlNode newUrlNode = doc.CreateNode(XmlNodeType.Attribute, "newurl", null);
 					if (ParentIsDocument)
 					{

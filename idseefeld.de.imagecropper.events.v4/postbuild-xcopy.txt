@@ -1,3 +1,0 @@
-﻿you may adjust the paths and copy the following lines to project properties into section build events -> post build events:
-
-xcopy "$(ProjectDir)bin\idseefeld.de.imagecropper.events.v4.*" "C:\inetpub\wwwroot\umb6.1.x\www4\bin" /Y

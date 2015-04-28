@@ -339,8 +339,8 @@ namespace idseefeld.de.imagecropper.imagecropper {
 				adjustedPath = String.Format("{0}.{1}",
 					adjustedPath.Substring(0, adjustedPath.LastIndexOf('.')),
 					extension);
-				string sourceFile = _fileSystem.GetFullPath(relativeImagePath);//IOHelper.MapPath(relativeImagePath);
-				string newFile = _fileSystem.GetFullPath(adjustedPath);// IOHelper.MapPath(adjustedPath);
+				string sourceFile = _fileSystem.GetFullPath(_fileSystem.GetRelativePath(relativeImagePath));
+				string newFile = _fileSystem.GetFullPath(_fileSystem.GetRelativePath(adjustedPath));
 
 				ResizeEngine.saveNewImageSize(sourceFile, extension, newFile, true);
 			}

@@ -12,6 +12,7 @@ using Content = umbraco.cms.businesslogic.Content;
 using System.Web.Hosting;
 using Umbraco.Core.IO;
 using umbraco.editorControls;
+using System.Configuration;
 
 [assembly: WebResource("idseefeld.de.imagecropper.imagecropper.Resources.imageCropperScript.js", "text/javascript")]
 [assembly: WebResource("idseefeld.de.imagecropper.imagecropper.Resources.json2.js", "text/javascript")]
@@ -265,12 +266,21 @@ namespace idseefeld.de.imagecropper.imagecropper {
 			hdnJson.Value = sbJson.ToString();
 			hdnRaw.Value = sbRaw.ToString();
 
-			string imageCropperInitScript =
-				"initImageCropper('" +
-				imgImage.ClientID + "', '" +
-				hdnJson.ClientID + "', '" +
-				hdnRaw.ClientID +
-				"');";
+            string scaleFactor = "0.85";
+            string scaleFactorAS = ConfigurationManager.AppSettings["idseefeld.de.imagecropper:scaleFactor"];
+            if (!String.IsNullOrEmpty(scaleFactorAS))
+            {
+                scaleFactor = scaleFactorAS;
+            }
+            string imageCropperInitScript =
+                "initImageCropper('" +
+                imgImage.ClientID + "', '" +
+                hdnJson.ClientID + "', '" +
+                hdnRaw.ClientID + "', '" +
+                scaleFactor +
+                "');";
+
+			
 
 			Controls.Add(new LiteralControl(string.Format(
 @"<style type='text/css'>
